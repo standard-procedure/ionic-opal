@@ -1,0 +1,10 @@
+{
+  "index.ignored_file_patterns" : [
+    "vendor"
+  ],
+  "workspace.color" : 3,
+  "workspace.name" : "AQR Client App",
+  "workspace.preview_root" : "src",
+  "workspace.preview_type" : "custom",
+  "workspace.preview_url" : "http:\/\/localhost:9292\/"
+}
