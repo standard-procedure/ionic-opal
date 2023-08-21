@@ -5,15 +5,13 @@ class UiHeader < Element
     self.inner_html = <<~HTML
       <ion-header>
         <ion-toolbar>
-          <ion-back-button></ion-back-button>
+          <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+          </ion-buttons>
           <ion-title id="page-title">#{self[:title]}</ion-title>
         </ion-toolbar>
       </ion-header>
     HTML
-  end
-
-  def on_changed attribute, old_value, new_value
-    redraw
   end
 
   custom_element "ui-header"

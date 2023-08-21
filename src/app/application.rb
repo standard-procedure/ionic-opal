@@ -4,14 +4,15 @@ require_relative "page/login_page"
 require_relative "page/dashboard_page"
 require_relative "page/profile_page"
 require_relative "page/accounts_page"
+require_relative "page/assessments_page"
+require_relative "page/products_page"
 
 class Application < Element
   self.observed_attributes = %i[token href name]
 
   def render
     self.inner_html = <<~HTML
-      <ion-nav root="dashboard-page">
-      </ion-nav>
+      <ion-nav id="application-frame" swipe-gesture></ion-nav>
     HTML
   end
 

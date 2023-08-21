@@ -8,6 +8,12 @@ class DashboardPage < Element
         dom.e "ion-item", href: "/accounts" do
           dom.e("ion-label") { "Accounts" }
         end
+        dom.e "ion-item", href: "/assessments" do
+          dom.e("ion-label") { "Assessments" }
+        end
+        dom.e "ion-item", href: "/products" do
+          dom.e("ion-label") { "Products" }
+        end
         dom.e "ion-item", href: "/profile" do
           dom.e("ion-label") { "Profile" }
         end

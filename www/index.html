@@ -13,15 +13,16 @@
 </head>
 
 <body>
-  <ion-router>
-    <ion-route url="/" component="dashboard-page" name="AQR" href="https://api.aqrtest.com/api"></ion-route>
-    <ion-route url="/login" component="login-page"></ion-route>
-    <ion-route url="/profile" component="profile-page"></ion-route>
-    <ion-route url="/accounts" component="accounts-page"></ion-route>
-    <ion-route-redirect id="login-guard" from="*"></ion-route-redirect>
-  </ion-router>
-
   <ion-app>
+    <ion-router>
+      <ion-route url="/" component="dashboard-page"></ion-route>
+      <ion-route url="/login" component="login-page"></ion-route>
+      <ion-route url="/profile" component="profile-page"></ion-route>
+      <ion-route url="/accounts" component="accounts-page"></ion-route>
+      <ion-route url="/assessments" component="assessments-page"></ion-route>
+      <ion-route url="/products" component="products-page"></ion-route>
+      <ion-route-redirect id="login-guard" from="*"></ion-route-redirect>
+    </ion-router>
     <application-frame href="https://api.aqrtest.com/api" name="AQR"></application-frame>
   </ion-app>
 </body>
