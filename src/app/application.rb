@@ -1,7 +1,9 @@
+require "base64"
 require_relative "ui/header"
 require_relative "page/login_page"
 require_relative "page/dashboard_page"
 require_relative "page/profile_page"
+require_relative "page/accounts_page"
 
 class Application < Element
   self.observed_attributes = %i[token href name]
@@ -15,8 +17,8 @@ class Application < Element
 
   def send method, uri, **params
     Browser::HTTP.send(method, "#{self[:href]}#{uri}", **params) do |request|
-      request.user "USER"
-      request.password self[:token] || ""
+      encoded = Base64.encode64 "USER:#{self[:token]}"
+      request.headers["Authorization"] = "Basic #{encoded}"
     end
   end
 

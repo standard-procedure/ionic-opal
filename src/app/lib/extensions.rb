@@ -28,6 +28,14 @@ class String
   end
 end
 
+class Array
+  def self.wrap items
+    return [] if items.blank?
+    return items if items.is_a? Array
+    [items]
+  end
+end
+
 class Browser::DOM::Node
   def value
     `#{@native}.value || nil`

@@ -39,8 +39,7 @@ class Element < Browser::DOM::Element::Custom
   end
 
   def attribute_changed attribute, old_value, new_value
-    method = :"on_#{attribute}_changed"
-    respond_to?(method) ? send(method, old_value, new_value) : on_changed(attribute, old_value, new_value)
+    on_changed(attribute, old_value, new_value)
   end
 
   def router

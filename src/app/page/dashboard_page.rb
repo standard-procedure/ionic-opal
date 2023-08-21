@@ -5,10 +5,11 @@ class DashboardPage < Element
     inner_dom do |dom|
       dom.e "ui-header", title: "Application"
       dom.e "ion-content", class: "ion-padding" do
+        dom.e "ion-item", href: "/accounts" do
+          dom.e("ion-label") { "Accounts" }
+        end
         dom.e "ion-item", href: "/profile" do
-          dom.e "ion-label" do
-            "Profile"
-          end
+          dom.e("ion-label") { "Profile" }
         end
       end
     end
