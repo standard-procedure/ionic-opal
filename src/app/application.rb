@@ -13,8 +13,19 @@ class Application < Element
     HTML
   end
 
+  def send method, uri, **params
+    Browser::HTTP.send(method, "#{self[:href]}#{uri}", **params) do |request|
+      request.user "USER"
+      request.password self[:token] || ""
+    end
+  end
+
+  def logged_in?
+    self[:token].present?
+  end
+
   def login_as email, password
-    Browser::HTTP.post("#{self[:href]}/logins.json", email: email, password: password).then do |response|
+    send(:post, "/logins.json", email: email, password: password).then do |response|
       self[:token] = response.json["reference"]
       on_token_changed nil, self[:token]
     end.fail do |error|
