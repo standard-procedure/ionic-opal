@@ -3,28 +3,31 @@ class LoginPage < Element
 
   def render
     inner_dom do |dom|
-      form = dom.form class: "ion-align-self-stretch" do
-        dom.e "ion-item" do
-          field = dom.e("ion-input", id: "email", type: "email", placeholder: "Email", autocomplete: "email", value: self[:email], required: true)
-          field.on "ionChange" do |event|
-            self[:email] = event.target.value
+      dom.e "ui-header", title: "Application"
+      dom.e "ion-content", class: "ion-padding" do
+        form = dom.form class: "ion-align-self-stretch" do
+          dom.e "ion-item" do
+            field = dom.e("ion-input", id: "email", type: "email", placeholder: "Email", autocomplete: "email", value: self[:email], required: true)
+            field.on "ionChange" do |event|
+              self[:email] = event.target.value
+            end
+          end
+          dom.e "ion-item" do
+            field = dom.e("ion-input", id: "password", placeholder: "Password", type: "password", autocomplete: "current-password", value: self[:password], required: true, "error-text": self[:error])
+            field.on "ionChange" do |event|
+              self[:password] = event.target.value
+            end
+          end
+          dom.e "ion-item" do
+            dom.e "ion-button", type: "submit", expand: "block" do
+              "Log in"
+            end
           end
         end
-        dom.e "ion-item" do
-          field = dom.e("ion-input", id: "password", placeholder: "Password", type: "password", autocomplete: "current-password", value: self[:password], required: true, "error-text": self[:error])
-          field.on "ionChange" do |event|
-            self[:password] = event.target.value
-          end
+        form.on "submit" do |event|
+          event.prevent
+          do_login
         end
-        dom.e "ion-item" do
-          dom.e "ion-button", type: "submit", expand: "block" do
-            "Log in"
-          end
-        end
-      end
-      form.on "submit" do |event|
-        event.prevent
-        do_login
       end
     end
   end

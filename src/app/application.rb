@@ -1,3 +1,4 @@
+require_relative "ui/header"
 require_relative "page/login_page"
 require_relative "page/dashboard_page"
 require_relative "page/profile_page"
@@ -6,18 +7,16 @@ class Application < Element
   self.observed_attributes = %i[token href name]
 
   def render
-    inner_dom do |dom|
-      if self[:token].blank?
-        dom.e "login-page"
-      else
-        dom.e "ion-router-outlet"
-      end
-    end
+    self.inner_html = <<~HTML
+      <ion-nav root="dashboard-page">
+      </ion-nav>
+    HTML
   end
 
   def login_as email, password
     Browser::HTTP.post("#{self[:href]}/logins.json", email: email, password: password).then do |response|
       self[:token] = response.json["reference"]
+      on_token_changed nil, self[:token]
     end.fail do |error|
       raise LoginFailed.new(error)
     end
@@ -26,6 +25,7 @@ class Application < Element
   def logout
     self[:token] = nil
     window.storage[:login_token] = nil
+    on_token_changed nil, nil
   end
 
   def on_attached
@@ -35,10 +35,6 @@ class Application < Element
 
   def on_detached
     Application.current = nil
-  end
-
-  def on_changed attribute, old_value, new_value
-    redraw
   end
 
   def on_token_changed old_value, new_value

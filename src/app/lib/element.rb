@@ -43,6 +43,10 @@ class Element < Browser::DOM::Element::Custom
     respond_to?(method) ? send(method, old_value, new_value) : on_changed(attribute, old_value, new_value)
   end
 
+  def router
+    document["ion-router"]
+  end
+
   class << self
     attr_reader :template_block
 
