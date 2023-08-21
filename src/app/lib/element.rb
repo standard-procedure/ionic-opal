@@ -1,10 +1,10 @@
-require "paggio"
-
 class Element < Browser::DOM::Element::Custom
   attr_accessor :contents
 
   def redraw
-    render
+    Promise.new.tap do |promise|
+      promise.resolve.then { render }
+    end
   end
 
   def render
@@ -33,12 +33,14 @@ class Element < Browser::DOM::Element::Custom
   end
 
   def adopted
+    @contents = inner_html
     redraw
     on_adopted
   end
 
   def attribute_changed attribute, old_value, new_value
-    on_changed attribute, old_value, new_value
+    method = :"on_#{attribute}_changed"
+    respond_to?(method) ? send(method, old_value, new_value) : on_changed(attribute, old_value, new_value)
   end
 
   class << self

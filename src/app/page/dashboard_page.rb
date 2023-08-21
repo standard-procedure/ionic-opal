@@ -3,7 +3,9 @@ class DashboardPage < Element
 
   def render
     inner_dom do |dom|
-      dom.p "HELLO"
+      dom.e "ion-item", href: "/profile" do
+        dom.e("ion-label") { "Profile" }
+      end
     end
   end
 
