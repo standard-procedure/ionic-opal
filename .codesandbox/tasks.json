@@ -1,0 +1,48 @@
+{
+  "setupTasks": [
+    {
+      "name": "Install Dependencies",
+      "command": "bundle install"
+    }
+  ],
+  "tasks": {
+    "bundle:install": {
+      "name": "Bundle",
+      "command": "bundle install",
+      "restartOn": {
+        "files": ["Gemfile"],
+        "branch": true,
+        "resume": false
+      }
+    },
+    "build": {
+      "name": "Build",
+      "command": "bundle exec rake build",
+      "restartOn": {
+        "files": ["**/*.rb", "**/*.css", "**/*.html"],
+        "branch": true,
+        "resume": false
+      }
+    },
+    "server": {
+      "name": "Server",
+      "command": "bundle exec rackup config.ru",
+            "restartOn": {
+        "branch": true,
+        "resume": false
+      },
+      "preview": {
+        "port": 9292
+      },
+
+    },
+    "console": {
+      "name": "console",
+      "command": "bin/console"
+    },
+    "shell": {
+      "name": "zsh",
+      "command": "zsh"
+    },
+  }
+}

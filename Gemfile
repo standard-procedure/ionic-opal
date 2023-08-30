@@ -16,4 +16,3 @@ end
 
 gem "opal"
 gem "opal-browser"
-gem "markaby"
