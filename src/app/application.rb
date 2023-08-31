@@ -1,5 +1,7 @@
 require "base64"
 require_relative "ui/header"
+require_relative "ui/menu"
+require_relative "ui/icon"
 require_relative "page/login_page"
 require_relative "page/dashboard_page"
 require_relative "page/profile_page"
@@ -12,6 +14,9 @@ class Application < Element
 
   def render
     self.inner_html = <<~HTML
+      <ion-menu content-id="application-frame">
+        <ui-menu></ui-menu>
+      </ion-menu>
       <ion-nav id="application-frame" swipe-gesture></ion-nav>
     HTML
   end
