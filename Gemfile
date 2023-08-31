@@ -8,6 +8,7 @@ group :development do
   gem "guard"
   gem "guard-standardrb"
   gem "guard-livereload"
+  gem "guard-rake"
 end
 
 group :test do

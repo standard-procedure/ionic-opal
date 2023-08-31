@@ -17,7 +17,7 @@ end
 desc "Build the app"
 task :build do
   Opal.append_path "src/app"
-  File.binwrite "www/index.js", Opal::Builder.build("environment").to_s
+  File.binwrite "www/application.js", Opal::Builder.build("environment").to_s
   `cp src/index.html www/index.html`
   `cp src/styles.css www/styles.css\ncp -r src/assets www/ `
 end
