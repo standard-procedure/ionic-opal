@@ -2,12 +2,11 @@ require "base64"
 require_relative "ui/header"
 require_relative "ui/menu"
 require_relative "ui/icon"
-require_relative "page/login_page"
-require_relative "page/dashboard_page"
-require_relative "page/profile_page"
-require_relative "page/accounts_page"
-require_relative "page/assessments_page"
-require_relative "page/products_page"
+require_relative "page/login"
+require_relative "page/dashboard"
+require_relative "page/accounts"
+require_relative "page/assessments"
+require_relative "page/products"
 
 class Application < Element
   self.observed_attributes = %i[token href name]
