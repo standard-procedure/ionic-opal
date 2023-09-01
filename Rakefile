@@ -5,7 +5,7 @@ require "opal-browser"
 Opal.append_path "src/app"
 
 Opal::Config.source_map_enabled = true
-Opal::Config.esm = true
+Opal::Config.esm = false
 
 desc "Lint the app"
 task :lint do
