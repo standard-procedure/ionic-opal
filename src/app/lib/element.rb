@@ -1,9 +1,12 @@
 class Element < Browser::DOM::Element::Custom
-  attr_accessor :contents
-
   def redraw
+    return if @redraw_scheduled
+    @redraw_scheduled = true
     Promise.new.tap do |promise|
-      promise.resolve.then { render }
+      promise.resolve.then do
+        @redraw_scheduled = false
+        render
+      end
     end
   end
 
@@ -23,7 +26,6 @@ class Element < Browser::DOM::Element::Custom
   end
 
   def attached
-    @contents = inner_html
     redraw
     on_attached
   end
@@ -33,28 +35,26 @@ class Element < Browser::DOM::Element::Custom
   end
 
   def adopted
-    @contents = inner_html
     redraw
     on_adopted
   end
 
   def attribute_changed attribute, old_value, new_value
-    on_changed(attribute, old_value, new_value)
+    method = :"#{attribute}_changed"
+    respond_to?(method) ? send(method, old_value, new_value) : on_changed(attribute, old_value, new_value)
   end
 
   def router
     document["ion-router"]
   end
 
-  class << self
-    attr_reader :template_block
+  def custom_class
+    self.class.custom_class
+  end
 
+  class << self
     def custom_element tag_name
       def_custom tag_name, base_class: `HTMLElement`
-    end
-
-    def template &block
-      @template_block = block
     end
   end
 end

@@ -4,21 +4,31 @@ module Ui
 
     def render
       inner_dom do |dom|
-        dom.e "ion-content", class: "ion-padding" do
+        dom.e "ion-header" do
+          dom.e "ion-toolbar" do
+            dom.e "ion-title" do
+              "AQR"
+            end
+          end
+        end
+        dom.e "ion-content", class: "ion-align-self-stretch" do
           dom.e "ion-list" do
             dom.e "ion-item", href: "/" do
-              dom.e "ui-icon", name: "dashboard", slot: "start"
               dom.e "ion-label" do
                 "Dashboard"
               end
+            end.on "click" do |event|
+              parent.to_n.JS.close
             end
-            dom.e "ion-item" do
-              dom.e "ui-icon", name: "log_out", slot: "start"
-              dom.e "ion-label" do
-                "Log out"
-              end
+          end
+        end
+        dom.e "ion-footer" do
+          dom.e "ion-toolbar" do
+            dom.e "ion-title" do
+              "Log out"
             end.on "click" do |event|
               Application.current.logout
+              parent.to_n.JS.close
             end
           end
         end

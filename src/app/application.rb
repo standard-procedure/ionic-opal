@@ -4,24 +4,24 @@ require_relative "ui/menu"
 require_relative "ui/icon"
 require_relative "page/login"
 require_relative "page/dashboard"
-require_relative "page/accounts"
+require_relative "page/account"
 require_relative "page/assessments"
 require_relative "page/products"
 
 class Application < Element
-  self.observed_attributes = %i[token href name]
+  self.observed_attributes = %i[token uri name]
 
   def render
     self.inner_html = <<~HTML
       <ion-menu content-id="application-frame">
         <ui-menu></ui-menu>
       </ion-menu>
-      <ion-nav id="application-frame" swipe-gesture></ion-nav>
+      <ion-router-outlet id="application-frame" swipe-gesture></ion-router-outlet>
     HTML
   end
 
   def send method, uri, **params
-    Browser::HTTP.send(method, "#{self[:href]}#{uri}", **params) do |request|
+    Browser::HTTP.send(method, "#{self[:uri]}#{uri}", **params) do |request|
       encoded = Base64.encode64 "USER:#{self[:token]}"
       request.headers["Authorization"] = "Basic #{encoded}"
     end

@@ -2,23 +2,31 @@ module Page
   class Dashboard < Element
     self.observed_attributes = %i[]
 
+    def accounts
+      @accounts ||= []
+    end
+
     def render
       inner_dom do |dom|
-        dom.e "ui-header", title: "Application"
+        dom.e "ui-header", title: "Accounts"
         dom.e "ion-content", class: "ion-padding" do
-          dom.e "ion-item", href: "/accounts" do
-            dom.e("ion-label") { "Accounts" }
-          end
-          dom.e "ion-item", href: "/assessments" do
-            dom.e("ion-label") { "Assessments" }
-          end
-          dom.e "ion-item", href: "/products" do
-            dom.e("ion-label") { "Products" }
-          end
-          dom.e "ion-item", href: "/profile" do
-            dom.e("ion-label") { "Profile" }
+          dom.e "ion-list" do
+            accounts.each do |account|
+              dom.e "ion-item", href: "/accounts/#{account["id"]}" do
+                dom.e "ion-label" do
+                  account["name"].to_s
+                end
+              end
+            end
           end
         end
+      end
+    end
+
+    def on_attached
+      Application.current.send(:get, "/accounts.json").then do |response|
+        @accounts = response.json
+        redraw
       end
     end
 
