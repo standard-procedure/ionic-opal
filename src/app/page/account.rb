@@ -1,6 +1,8 @@
 module Page
   class Account < Element
-    self.observed_attributes = [:account_id, :name, :parent_id]
+    property :account_id, type: :integer
+    property :name
+    property :parent_id, type: :integer
 
     def render
       inner_dom do |dom|
@@ -11,19 +13,10 @@ module Page
       end
     end
 
-    def on_changed attribute, old_value, new_value
-      puts "on_changed: #{attribute} #{old_value} -> #{new_value}: #{attributes}"
-    end
-
     def on_attached
-      puts "on_attached - #{attributes.collect { |k, v| k }.join(", ")}"
-    end
-
-    def account_id_changed old_value, new_value
-      puts "account_id_changed: #{old_value} -> #{new_value}: #{attributes}"
-      return if new_value.nil?
-      Application.current.send(:get, "/accounts/#{self[:account_id]}.json").then do |response|
-        puts response.json
+      Application.current.send(:get, "/accounts/#{account_id}.json").then do |response|
+        self[:name] = response.json["name"]
+        self[:parent_id] = response.json["parent_id"]
         redraw
       end
     end

@@ -40,6 +40,7 @@ class Element < Browser::DOM::Element::Custom
   end
 
   def attribute_changed attribute, old_value, new_value
+    @native.JS[attribute] = value if @native.JS[attribute] != value.to_s
     method = :"#{attribute}_changed"
     respond_to?(method) ? send(method, old_value, new_value) : on_changed(attribute, old_value, new_value)
   end
@@ -53,6 +54,44 @@ class Element < Browser::DOM::Element::Custom
   end
 
   class << self
+    def property name, type: :string
+      define_method name do
+        value = @native.JS[name] || self[name]
+        case type
+        when :integer
+          value.to_i
+        when :float
+          value.to_f
+        when :array
+          value.blank? ? [] : JSON.parse(value)
+        when :hash
+          value.blank? ? {} : JSON.parse(value).to_h
+        when :date
+          value.blank? ? nil : Date.parse(value)
+        when :time
+          value.blank? ? nil : Time.parse(value)
+        when :boolean
+          value.to_s == "true"
+        else
+          (value == "null") ? nil : value
+        end
+      end
+      define_method :"#{name}=" do |value|
+        native_value = case type
+        when :array, :hash, :date, :time, :boolean
+          value.blank? ? [] : value.to_json
+        else
+          value.to_s
+        end
+
+        @native.JS[name] = native_value
+        self[name] = native_value
+      end
+
+      observed_attributes ||= []
+      observed_attributes << name
+    end
+
     def custom_element tag_name
       def_custom tag_name, base_class: `HTMLElement`
     end

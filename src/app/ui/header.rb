@@ -1,6 +1,6 @@
 module Ui
   class Header < Element
-    self.observed_attributes = %i[title]
+    property :title
 
     def render
       self.inner_html = <<~HTML
@@ -9,7 +9,7 @@ module Ui
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
-            <ion-title id="page-title">#{self[:title]}</ion-title>
+            <ion-title id="page-title">#{title}</ion-title>
           </ion-toolbar>
         </ion-header>
       HTML

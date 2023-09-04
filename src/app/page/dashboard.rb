@@ -1,10 +1,6 @@
 module Page
   class Dashboard < Element
-    self.observed_attributes = %i[]
-
-    def accounts
-      @accounts ||= []
-    end
+    property :accounts, type: :array
 
     def render
       inner_dom do |dom|
@@ -25,7 +21,7 @@ module Page
 
     def on_attached
       Application.current.send(:get, "/accounts.json").then do |response|
-        @accounts = response.json
+        self.accounts = response.json
         redraw
       end
     end

@@ -9,46 +9,50 @@ require_relative "page/assessments"
 require_relative "page/products"
 
 class Application < Element
-  self.observed_attributes = %i[token uri name]
+  property :token
+  property :href
+  property :name
 
   def render
     self.inner_html = <<~HTML
       <ion-menu content-id="application-frame">
         <ui-menu></ui-menu>
       </ion-menu>
-      <ion-router-outlet id="application-frame" swipe-gesture></ion-router-outlet>
+      <ion-nav id="application-frame" swipe-gesture></ion-nav>
     HTML
   end
 
   def send method, uri, **params
-    Browser::HTTP.send(method, "#{self[:uri]}#{uri}", **params) do |request|
-      encoded = Base64.encode64 "USER:#{self[:token]}"
-      request.headers["Authorization"] = "Basic #{encoded}"
+    Browser::HTTP.send(method, "#{href}#{uri}", **params) do |request|
+      if logged_in?
+        encoded = Base64.encode64 "USER:#{token}"
+        request.headers["Authorization"] = "Basic #{encoded}"
+      end
     end
   end
 
   def logged_in?
-    self[:token].present?
+    token.present?
   end
 
   def login_as email, password
     send(:post, "/logins.json", email: email, password: password).then do |response|
-      self[:token] = response.json["reference"]
-      on_token_changed nil, self[:token]
+      self.token = response.json["reference"]
+      on_token_changed nil, token
     end.fail do |error|
       raise LoginFailed.new(error)
     end
   end
 
   def logout
-    self[:token] = nil
+    self.token = nil
     window.storage[:login_token] = nil
     on_token_changed nil, nil
   end
 
   def on_attached
     Application.current = self
-    self[:token] = window.storage[:login_token]
+    self.token = window.storage[:login_token]
   end
 
   def on_detached

@@ -1,6 +1,6 @@
 module Page
   class Products < Element
-    self.observed_attributes = %i[]
+    property :products, type: :array
 
     def initialize node
       super node
@@ -12,7 +12,7 @@ module Page
         dom.e "ui-header", title: "Products"
         dom.e "ion-content", class: "ion-padding" do
           dom.e "ion-list" do
-            @products.each do |product|
+            products.each do |product|
               dom.e "ion-item", href: "/products/#{product["id"]}" do
                 dom.e "ion-label" do
                   product["name"].to_s
@@ -26,7 +26,7 @@ module Page
 
     def on_attached
       Application.current.send(:get, "/products.json").then do |response|
-        @products = response.json
+        self.products = response.json
         redraw
       end
     end
