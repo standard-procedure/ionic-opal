@@ -45,16 +45,18 @@ class Application < Element
   end
 
   def logout
-    window.storage[:login_token] = nil
+    self.token = nil
     on_token_changed nil, nil
   end
 
   def on_attached
     Application.current = self
-    on_token_changed token, window.storage[:login_token]
+    self.token = window.storage[:login_token]
+    on_token_changed nil, token
   end
 
   def on_detached
+    off "login-changed"
     Application.current = nil
   end
 
@@ -67,7 +69,8 @@ class Application < Element
       document["login-guard"][:from] = "*"
       document["login-guard"][:to] = "/login"
     end
-    redraw
+    trigger "login-changed"
+    redraw if logged_in?
   end
 
   custom_element "application-frame"
