@@ -45,14 +45,13 @@ class Application < Element
   end
 
   def logout
-    self.token = nil
     window.storage[:login_token] = nil
     on_token_changed nil, nil
   end
 
   def on_attached
     Application.current = self
-    self.token = window.storage[:login_token]
+    on_token_changed token, window.storage[:login_token]
   end
 
   def on_detached

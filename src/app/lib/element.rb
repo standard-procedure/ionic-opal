@@ -40,7 +40,6 @@ class Element < Browser::DOM::Element::Custom
   end
 
   def attribute_changed attribute, old_value, new_value
-    @native.JS[attribute] = value if @native.JS[attribute] != value.to_s
     method = :"#{attribute}_changed"
     respond_to?(method) ? send(method, old_value, new_value) : on_changed(attribute, old_value, new_value)
   end
@@ -79,9 +78,9 @@ class Element < Browser::DOM::Element::Custom
       define_method :"#{name}=" do |value|
         native_value = case type
         when :array, :hash, :date, :time, :boolean
-          value.blank? ? [] : value.to_json
+          value.blank? ? nil : value.to_json
         else
-          value.to_s
+          value
         end
 
         @native.JS[name] = native_value
