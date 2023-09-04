@@ -10,19 +10,17 @@ module Page
         dom.e "ion-content", class: "ion-padding" do
           form = dom.form class: "ion-align-self-stretch" do
             dom.e "ion-item" do
-              field = dom.e("ion-input", id: "email", type: "email", placeholder: "Email", autocomplete: "email", value: self[:email], required: true)
-              field.on "ionChange" do |event|
+              dom.e("ion-input", id: "email", type: "email", label: "Email", "label-placement": "floating", autocomplete: "email", inputmode: "email", value: self[:email], required: true).on "ionChange" do |event|
                 self.email = event.target.value
               end
             end
             dom.e "ion-item" do
-              field = dom.e("ion-input", id: "password", placeholder: "Password", type: "password", autocomplete: "current-password", value: self[:password], required: true, "error-text": self[:error])
-              field.on "ionChange" do |event|
+              dom.e("ion-input", id: "password", label: "Password", "label-placement": "floating", type: "password", autocomplete: "current-password", value: self[:password], required: true, "error-text": self[:error]).on "ionChange" do |event|
                 self.password = event.target.value
               end
             end
             dom.e "ion-item" do
-              dom.e "ion-button", type: "submit", expand: "block" do
+              dom.e "ion-button", type: "submit", color: "success", size: "medium", slot: "end" do
                 "Log in"
               end
             end

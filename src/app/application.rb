@@ -15,10 +15,10 @@ class Application < Element
 
   def render
     self.inner_html = <<~HTML
-      <ion-menu content-id="application-frame">
+      <ion-menu content-id="application-frame" side="start" swipe-gesture="true">
         <ui-menu></ui-menu>
       </ion-menu>
-      <ion-nav id="application-frame" swipe-gesture></ion-nav>
+      <ion-router-outlet id="application-frame" swipe-gesture></ion-router-outlet>
     HTML
   end
 
