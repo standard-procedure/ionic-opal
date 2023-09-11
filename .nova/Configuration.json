@@ -1,0 +1,4 @@
+{
+  "john-ellis.rubocop-nova.autocorrect" : "--auto-correct-all",
+  "john-ellis.rubocop-nova.base-command" : "docker compose exec app standardrb"
+}
