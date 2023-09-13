@@ -11,10 +11,11 @@ group :development do
   gem "guard-rake"
 end
 
-group :test do
+group :opal do
   gem "opal-rspec"
+  gem "opal-sprockets"
 end
 
 gem "opal"
 gem "opal-browser"
-gem "markaby"
+gem "standard-procedure-signal"
