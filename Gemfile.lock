@@ -113,7 +113,7 @@ GEM
     standard-performance (1.1.2)
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.18.0)
-    standard-procedure-signal (0.1.2.1)
+    standard-procedure-signal (0.3.0)
     standardrb (1.0.1)
       standard
     thor (1.2.2)
