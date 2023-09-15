@@ -2,10 +2,10 @@ require "base64"
 require_relative "ui/header"
 require_relative "ui/menu"
 require_relative "ui/icon"
-require_relative "page/login"
-require_relative "page/dashboard"
-require_relative "page/account"
-require_relative "page/assessment"
+require_relative "login/page"
+require_relative "dashboard/page"
+require_relative "accounts/page"
+require_relative "assessments/page"
 
 class Application < Element
   property :token
@@ -21,7 +21,7 @@ class Application < Element
     HTML
   end
 
-  def send method, uri, **params
+  def fetch method, uri, **params
     Browser::HTTP.send(method, "#{href}#{uri}", **params) do |request|
       if logged_in?
         encoded = Base64.encode64 "USER:#{token}"

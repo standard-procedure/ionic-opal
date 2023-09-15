@@ -1,4 +1,11 @@
 class Element < Browser::DOM::Element::Custom
+  attr_reader :_properties
+
+  def initialize node
+    super node
+    @_properties = {}
+  end
+
   def redraw
     return if @redraw_scheduled
     @redraw_scheduled = true
@@ -53,40 +60,28 @@ class Element < Browser::DOM::Element::Custom
   end
 
   class << self
-    def property name, type: :string
+    def property name, type: :text, default: nil
       define_method name do
-        value = @native.JS[name] || self[name]
-        case type
-        when :integer
-          value.to_i
-        when :float
-          value.to_f
-        when :array
-          value.blank? ? [] : JSON.parse(value)
-        when :hash
-          value.blank? ? {} : JSON.parse(value).to_h
-        when :date
-          value.blank? ? nil : Date.parse(value)
-        when :time
-          value.blank? ? nil : Time.parse(value)
-        when :boolean
-          value.to_s == "true"
-        else
-          (value == "null") ? nil : value
+        # If we don't have a ruby property defined then create one
+        # then check to see if there is a property on the underlying JS object
+        # or an attribute set on the element
+        # If neither has a value then use our default
+        if _properties[name].nil?
+          value = @native.JS[name] || self[name] || default
+          _properties[name] = StandardProcedure::Signal::Attribute.send type, value
         end
+        _properties[name].get
       end
+
       define_method :"#{name}=" do |value|
-        native_value = case type
-        when :array, :hash, :date, :time, :boolean
-          value.blank? ? nil : value.to_json
-        else
-          value
-        end
-
-        @native.JS[name] = native_value
-        self[name] = native_value
+        _properties[name] ||= StandardProcedure::Signal::Attribute.send(type, default)
+        _properties[name].set value
+        # Keep the underlying JS object in sync
+        @native.JS[name] = _properties[name].peek.to_n
+        value
       end
 
+      # Define the HTML attributes on the underlying element
       observed_attributes ||= []
       observed_attributes << name
     end

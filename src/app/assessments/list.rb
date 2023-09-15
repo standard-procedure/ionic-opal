@@ -1,7 +1,7 @@
 module Assessments
   class List < Element
     property :account_id, type: :integer
-    property :assessments, type: :array
+    property :assessments, type: :array, default: []
 
     def render
       inner_dom do |dom|
@@ -14,9 +14,9 @@ module Assessments
                 end
               end
               assessments.each do |assessment|
-                dom.e "ion-item", href: "/assessments/#{assessment["id"]}" do
+                dom.e "ion-item", href: "/assessments/#{assessment.peek["id"]}" do
                   dom.e "ion-label" do
-                    assessment["title"].to_s
+                    assessment.peek["title"].to_s
                   end
                 end
               end
@@ -33,7 +33,11 @@ module Assessments
     end
 
     def on_attached
-      Application.current.send(:get, "/accounts/#{account_id}/assessments.json").then do |response|
+      load_assessments
+    end
+
+    def load_assessments
+      Application.current.fetch(:get, "/accounts/#{account_id}/assessments.json").then do |response|
         self.assessments = response.json
         redraw
       end

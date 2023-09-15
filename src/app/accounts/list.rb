@@ -1,6 +1,6 @@
 module Accounts
   class List < Element
-    property :accounts, type: :array
+    property :accounts, type: :array, default: []
 
     def render
       inner_dom do |dom|
@@ -12,7 +12,7 @@ module Accounts
                   "Accounts"
                 end
               end
-              accounts.each do |account|
+              accounts.map(&:get).each do |account|
                 dom.e "ion-item", href: "/accounts/#{account["id"]}" do
                   dom.e "ion-label" do
                     account["name"].to_s
@@ -32,7 +32,11 @@ module Accounts
     end
 
     def on_attached
-      Application.current.send(:get, "/accounts.json").then do |response|
+      load_accounts
+    end
+
+    def load_accounts
+      Application.current.fetch(:get, "/accounts.json").then do |response|
         self.accounts = response.json
         redraw
       end

@@ -1,6 +1,6 @@
-module Page
-  class Candidates < Element
-    property :candidates, type: :array
+module Candidates
+  class Page < Element
+    property :candidates, type: :array, default: []
 
     def render
       inner_dom do |dom|
@@ -20,7 +20,7 @@ module Page
     end
 
     def on_attached
-      Application.current.send(:get, "/candidates.json").then do |response|
+      Application.current.fetch(:get, "/candidates.json").then do |response|
         self.candidates = response.json
         redraw
       end

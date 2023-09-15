@@ -1,16 +1,15 @@
-require_relative "../assessments/list"
+require_relative "../candidates/list"
 
-module Page
-  class Assessment < Element
+module Assessments
+  class Page < Element
     property :assessment_id, type: :integer
     property :title
-    property :candidates, type: :array
 
     def render
       inner_dom do |dom|
         dom.e "ui-header", title: title
         dom.e "ion-content", class: "ion-padding" do
-          "Candidates"
+          dom.e "candidates-list", assessment_id: assessment_id
         end
       end
     end
@@ -21,14 +20,8 @@ module Page
     end
 
     def load_assessment
-      Application.current.send(:get, "/assessments/#{assessment_id}.json").then do |response|
+      Application.current.fetch(:get, "/assessments/#{assessment_id}.json").then do |response|
         self.title = response.json["title"]
-      end
-    end
-
-    def load_candidates
-      Application.current.send(:get, "/assessments/#{assessment_id}/candidates.json").then do |response|
-        self[:candidates] = response.json
       end
     end
 

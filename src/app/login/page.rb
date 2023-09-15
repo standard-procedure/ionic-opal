@@ -1,5 +1,5 @@
-module Page
-  class Login < Element
+module Login
+  class Page < Element
     property :email
     property :password
     property :error

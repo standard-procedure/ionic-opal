@@ -1,8 +1,8 @@
 require_relative "../accounts/list"
 
-module Page
-  class Dashboard < Element
-    property :accounts, type: :array
+module Dashboard
+  class Page < Element
+    property :accounts, type: :array, default: []
 
     def render
       inner_dom do |dom|

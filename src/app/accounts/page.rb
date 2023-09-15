@@ -1,7 +1,7 @@
 require_relative "../assessments/list"
 
-module Page
-  class Account < Element
+module Accounts
+  class Page < Element
     property :account_id, type: :integer
     property :name
     property :parent_id, type: :integer
@@ -21,7 +21,7 @@ module Page
     end
 
     def load_account
-      Application.current.send(:get, "/accounts/#{account_id}.json").then do |response|
+      Application.current.fetch(:get, "/accounts/#{account_id}.json").then do |response|
         self.name = response.json["name"]
         self.parent_id = response.json["parent_id"]
         redraw
