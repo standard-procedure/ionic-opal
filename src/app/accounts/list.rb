@@ -46,10 +46,10 @@ module Accounts
     end
 
     def load_accounts
-      Promise.new.tap do |promise|
+      promise do
         Application.current.fetch(:get, "/accounts.json?page=#{page_number}").then do |response|
           self.accounts = accounts + response.json
-          promise.resolve response.json
+          response.json
         end
       end
     end

@@ -9,11 +9,9 @@ class Element < Browser::DOM::Element::Custom
   def redraw
     return if @redraw_scheduled
     @redraw_scheduled = true
-    Promise.new.tap do |promise|
-      promise.resolve.then do
-        @redraw_scheduled = false
-        render
-      end
+    next_tick do
+      @redraw_scheduled = false
+      render
     end
   end
 
