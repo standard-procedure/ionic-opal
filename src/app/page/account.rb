@@ -1,3 +1,5 @@
+require_relative "../assessments/list"
+
 module Page
   class Account < Element
     property :account_id, type: :integer
@@ -6,17 +8,22 @@ module Page
 
     def render
       inner_dom do |dom|
-        dom.e "ui-header", title: self[:name]
+        dom.e "ui-header", title: name
         dom.e "ion-content", class: "ion-padding" do
-          "Stuff goes here"
+          dom.e "assessments-list", account_id: account_id unless account_id == 0
         end
       end
     end
 
     def on_attached
+      load_account
+      redraw
+    end
+
+    def load_account
       Application.current.send(:get, "/accounts/#{account_id}.json").then do |response|
-        self[:name] = response.json["name"]
-        self[:parent_id] = response.json["parent_id"]
+        self.name = response.json["name"]
+        self.parent_id = response.json["parent_id"]
         redraw
       end
     end

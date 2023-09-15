@@ -5,8 +5,7 @@ require_relative "ui/icon"
 require_relative "page/login"
 require_relative "page/dashboard"
 require_relative "page/account"
-require_relative "page/assessments"
-require_relative "page/products"
+require_relative "page/assessment"
 
 class Application < Element
   property :token
