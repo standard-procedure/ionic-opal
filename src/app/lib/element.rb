@@ -2,87 +2,86 @@ require "date"
 require "time"
 
 class Element < Browser::DOM::Element::Custom
-  attr_reader :_properties
-
   def initialize node
     super node
     @_properties = {}
   end
-
-  def redraw
-    return if @redraw_scheduled
-    @redraw_scheduled = true
-    next_tick do
-      @redraw_scheduled = false
-      render
-    end
-  end
+  attr_reader :_properties
 
   def render
   end
 
-  def on_attached
-  end
+  module Implementation
+    def on_attached
+    end
 
-  def on_detached
-  end
+    def on_detached
+    end
 
-  def on_adopted
-  end
+    def on_adopted
+    end
 
-  def on_changed attribute, old_value, new_value
-  end
+    def on_changed attribute, old_value, new_value
+    end
 
-  def attached
-    redraw
-    on_attached
-  end
+    def attached
+      redraw
+      on_attached
+    end
 
-  def detached
-    on_detached
-  end
+    def detached
+      on_detached
+    end
 
-  def adopted
-    redraw
-    on_adopted
-  end
+    def adopted
+      redraw
+      on_adopted
+    end
 
-  def attribute_changed attribute, old_value, new_value
-    attribute = attribute.snakeify
-    method = :"#{attribute}_changed"
-    respond_to?(method) ? send(method, old_value, new_value) : on_changed(attribute, old_value, new_value)
-  end
+    def attribute_changed attribute, old_value, new_value
+      attribute = attribute.snakeify
+      method = :"#{attribute}_changed"
+      respond_to?(method) ? send(method, old_value, new_value) : on_changed(attribute, old_value, new_value)
+    end
 
-  def class_map classes = {}
-    classes.collect { |key, value| key if value }.compact.map { |cls| cls.to_s.kebabify }.join(" ")
-  end
+    def redraw
+      return if @redraw_scheduled
+      @redraw_scheduled = true
+      next_tick do
+        @redraw_scheduled = false
+        render
+      end
+    end
 
-  def application
-    Application.current
-  end
-
-  def router
-    document["ion-router"]
-  end
-
-  def custom_class
-    self.class.custom_class
-  end
-
-  def _convert value, type
-    return nil if value.nil?
-    case type
-    when :integer then value.to_i
-    when :float then value.to_f
-    when :date then value.is_a?(Date) ? value : Date.parse(value)
-    when :time then value.is_a?(Time) ? value : Time.new(value)
-    when :array then value.nil? ? [] : value
-    when :hash then value.nil? ? {} : value
-    else value
+    def _convert value, type
+      return nil if value.nil?
+      case type
+      when :integer then value.to_i
+      when :float then value.to_f
+      when :date then value.is_a?(Date) ? value : Date.parse(value)
+      when :time then value.is_a?(Time) ? value : Time.new(value)
+      when :array then value.nil? ? [] : value
+      when :hash then value.nil? ? {} : value
+      else value
+      end
     end
   end
 
-  class << self
+  module Helpers
+    def application
+      Application.current
+    end
+
+    def router
+      document["ion-router"]
+    end
+
+    def class_map classes = {}
+      classes.collect { |key, value| key if value }.compact.map { |cls| cls.to_s.kebabify }.join(" ")
+    end
+  end
+
+  module ClassMethods
     def property name, type: :text, default: nil
       native_attribute_name = name.to_s.kebabify
       native_property_name = name.to_s.camelify
@@ -113,4 +112,11 @@ class Element < Browser::DOM::Element::Custom
       def_custom tag_name, base_class: `HTMLElement`
     end
   end
+
+  extend ClassMethods
+
+  include Implementation
+  include Helpers
+
+  property :id
 end

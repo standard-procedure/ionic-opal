@@ -14,7 +14,7 @@ module Accounts
     end
 
     def on_attached
-      self.id = "account-#{account_id}"
+      self.id = "account-list-item-#{account_id}"
     end
 
     custom_element "account-list-item"
