@@ -9,19 +9,15 @@ module Assessments
         dom.ion_content class: "ion-padding" do
           dom.ion_list id: "assessments-list" do
             if assessments.any?
-              dom.e "ion-list-header" do
-                dom.e "ion-label" do
-                  "Assesssments"
-                end
+              dom.ion_list_header do
+                dom.ion_label { "Assesssments" }
               end
               assessments.each do |assessment|
                 render_item assessment, dom
               end
             else
-              dom.e "ion-list-header" do
-                dom.e "ion-label" do
-                  "No Assesssments"
-                end
+              dom.ion_list_header do
+                dom.ion_label { "No Assesssments" }
               end
             end
           end
