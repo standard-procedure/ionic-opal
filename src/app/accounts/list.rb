@@ -1,3 +1,5 @@
+require_relative "list_item"
+
 module Accounts
   class List < Element
     property :accounts, type: :array, default: []
@@ -32,10 +34,8 @@ module Accounts
       end
     end
 
-    def render_account account, dom
-      dom.ion_item id: "account-#{account["id"]}", href: "/accounts/#{account["id"]}" do
-        dom.ion_label { account["name"].to_s }
-      end
+    def render_account data, dom
+      dom.account_list_item account_id: data["id"], name: data["name"]
     end
 
     def on_attached
