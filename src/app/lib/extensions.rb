@@ -26,6 +26,21 @@ class String
   def present?
     !blank?
   end
+
+  def kebabify
+    tr "_", "-"
+  end
+
+  def snakeify
+    tr "-", "_"
+  end
+
+  def camelify
+    first, *rest = split("_")
+    first = first.downcase
+    rest = rest.map(&:capitalize)
+    ([first] + rest).join
+  end
 end
 
 class Array
@@ -42,10 +57,14 @@ class Browser::DOM::Node
   end
 end
 
+class Browser::DOM::Element
+  alias_native :complete
+end
+
 class Paggio::HTML
   def method_missing(name, *args, &block) # standard:disable Style/MissingRespondToMissing
     return super if name.to_s.end_with? "!"
-    name = name.to_s.tr("_", "-").to_sym if name.to_s.include? "_"
+    name = name.to_s.kebabify.to_sym if name.to_s.include? "_"
 
     content = ::Paggio::Utils.heredoc(args.shift.to_s) unless args.empty? || ::Hash === args.first
 
@@ -71,7 +90,7 @@ class Paggio::HTML::Element
   def initialize owner, name, attributes = {}
     @owner = owner
     @name = name
-    @attributes = attributes.transform_keys { |key| key.to_s.tr("_", "-") }
+    @attributes = attributes.transform_keys { |key| key.to_s.kebabify }
     @children = []
     @class_names = attributes.delete(:class).to_s.split
   end

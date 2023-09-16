@@ -7,9 +7,9 @@ module Assessments
 
     def render
       inner_dom do |dom|
-        dom.e "ui-header", title: title
-        dom.e "ion-content", class: "ion-padding" do
-          dom.e "candidates-list", assessment_id: assessment_id
+        dom.ui_header title: title
+        dom.ion_content class: "ion-padding" do
+          dom.candidates_list assessment_id: assessment_id
         end
       end
     end
@@ -20,7 +20,7 @@ module Assessments
     end
 
     def load_assessment
-      Application.current.fetch(:get, "/assessments/#{assessment_id}.json").then do |response|
+      application.fetch(:get, "/assessments/#{assessment_id}.json").then do |response|
         self.title = response.json["title"]
       end
     end

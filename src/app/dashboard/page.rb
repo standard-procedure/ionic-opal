@@ -6,9 +6,9 @@ module Dashboard
 
     def render
       inner_dom do |dom|
-        dom.e "ui-header", title: "Accounts"
-        dom.e "ion-content", class: "ion-padding" do
-          dom.e "accounts-list"
+        dom.ui_header title: "Accounts"
+        dom.ion_content class: "ion-padding" do
+          dom.accounts_list
         end
       end
     end

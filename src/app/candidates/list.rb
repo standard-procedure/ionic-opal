@@ -6,28 +6,27 @@ module Candidates
 
     def render
       inner_dom do |dom|
-        dom.e "ion-content", class: "ion-padding" do
-          @candidate_list = dom.e "ion-list", id: "candidates-list" do
+        dom.ion_content class: "ion-padding" do
+          dom.ion_list id: "candidates-list" do
             if candidates.any?
-              dom.e "ion-list-header" do
-                dom.e "ion-label" do
-                  "Candidates"
-                end
+              dom.ion_list_header do
+                dom.ion_label { "Candidates" }
               end
-              candidates.map(&:get).each do |candidate|
+              candidates.each do |candidate|
                 render_candidate candidate, dom
               end
             else
-              dom.e "ion-list-header" do
-                dom.e "ion-label" do
-                  "No candidates"
-                end
+              dom.ion_list_header do
+                dom.ion_label { "No candidates" }
               end
             end
-            dom.e "ion-infinite-scroll" do
-              dom.e "ion-infinite-scroll-content"
+            dom.ion_infinite_scroll do
+              dom.ion_infinite_scroll_content
             end.on "ionInfinite" do |event|
-              load_next_page(event)
+              load_next_page.then do |data|
+                event.target.complete
+                event.target[:disabled] = data.empty?
+              end
             end
           end
         end
@@ -35,8 +34,8 @@ module Candidates
     end
 
     def render_candidate candidate, dom
-      dom.e("ion-item", href: "/candidates/#{candidate["id"]}") do
-        dom.e "ion-label" do
+      dom.ion_item href: "/candidates/#{candidate["id"]}" do
+        dom.ion_label do
           candidate["name"].to_s
         end
       end
@@ -49,15 +48,15 @@ module Candidates
     end
 
     def load_candidates
-      Promise.new.tap do |promise|
-        Application.current.fetch(:get, "/assessments/#{assessment_id}/candidates.json?page=#{page_number}").then do |response|
+      promise do
+        application.fetch(:get, "/assessments/#{assessment_id}/candidates.json?page=#{page_number}").then do |response|
           self.candidates = candidates + response.json
-          promise.resolve response.json
+          response.json
         end
       end
     end
 
-    def load_next_page event
+    def load_next_page
       self.page_number = page_number + 1
       load_candidates.then do |data|
         at_css("#candidates-list").add_child do |dom|
@@ -65,8 +64,7 @@ module Candidates
             render_candidate candidate, dom
           end
         end
-        Native.call event.target.to_n, :complete
-        event.target[:disabled] = (data.count == 0)
+        data
       end
     end
 

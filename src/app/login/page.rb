@@ -33,7 +33,7 @@ module Login
     end
 
     def do_login
-      Application.current.login_as(self[:email], self[:password]).fail do
+      application.login_as(email, password).fail do
         self.error = "Unable to log in"
         redraw
       end

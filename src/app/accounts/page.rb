@@ -8,20 +8,21 @@ module Accounts
 
     def render
       inner_dom do |dom|
-        dom.e "ui-header", title: name
-        dom.e "ion-content", class: "ion-padding" do
-          dom.e "assessments-list", account_id: account_id unless account_id == 0
+        dom.ui_header title: name
+        dom.ion_content class: "ion-padding" do
+          if account_id.present?
+            dom.assessments_list account_id: account_id
+          end
         end
       end
     end
 
     def on_attached
       load_account
-      redraw
     end
 
     def load_account
-      Application.current.fetch(:get, "/accounts/#{account_id}.json").then do |response|
+      application.fetch(:get, "/accounts/#{account_id}.json").then do |response|
         self.name = response.json["name"]
         self.parent_id = response.json["parent_id"]
         redraw

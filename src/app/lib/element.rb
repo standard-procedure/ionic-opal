@@ -48,12 +48,17 @@ class Element < Browser::DOM::Element::Custom
   end
 
   def attribute_changed attribute, old_value, new_value
+    attribute = attribute.snakeify
     method = :"#{attribute}_changed"
     respond_to?(method) ? send(method, old_value, new_value) : on_changed(attribute, old_value, new_value)
   end
 
   def class_map classes = {}
-    classes.collect { |key, value| key if value }.compact.map { |cls| cls.to_s.tr("_", "-") }.join(" ")
+    classes.collect { |key, value| key if value }.compact.map { |cls| cls.to_s.kebabify }.join(" ")
+  end
+
+  def application
+    Application.current
   end
 
   def router
@@ -79,12 +84,15 @@ class Element < Browser::DOM::Element::Custom
 
   class << self
     def property name, type: :text, default: nil
+      native_attribute_name = name.to_s.kebabify
+      native_property_name = name.to_s.camelify
+
       define_method name do
         # If we don't have a ruby property defined then create one
         # then check to see if there is a property on the underlying JS object
         # or an attribute set on the element
         # If neither has a value then use our default
-        _properties[name] ||= _convert(@native.JS[name] || self[name] || default, type)
+        _properties[name] ||= _convert(@native.JS[native_property_name] || self[native_attribute_name] || default, type)
         _properties[name]
       end
 
@@ -92,13 +100,13 @@ class Element < Browser::DOM::Element::Custom
         value = _convert(value, type)
         _properties[name] = value
         # Keep the underlying JS object in sync
-        @native.JS[name] = value.to_n
+        @native.JS[native_property_name] = value.to_n
         value
       end
 
       # Define the HTML attributes on the underlying element
       observed_attributes ||= []
-      observed_attributes << name
+      observed_attributes << native_attribute_name
     end
 
     def custom_element tag_name
