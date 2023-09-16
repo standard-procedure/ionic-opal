@@ -1,3 +1,6 @@
+require "date"
+require "time"
+
 class Element < Browser::DOM::Element::Custom
   attr_reader :_properties
 
@@ -49,12 +52,29 @@ class Element < Browser::DOM::Element::Custom
     respond_to?(method) ? send(method, old_value, new_value) : on_changed(attribute, old_value, new_value)
   end
 
+  def class_map classes = {}
+    classes.collect { |key, value| key if value }.compact.map { |cls| cls.to_s.tr("_", "-") }.join(" ")
+  end
+
   def router
     document["ion-router"]
   end
 
   def custom_class
     self.class.custom_class
+  end
+
+  def _convert value, type
+    return nil if value.nil?
+    case type
+    when :integer then value.to_i
+    when :float then value.to_f
+    when :date then value.is_a?(Date) ? value : Date.parse(value)
+    when :time then value.is_a?(Time) ? value : Time.new(value)
+    when :array then value.nil? ? [] : value
+    when :hash then value.nil? ? {} : value
+    else value
+    end
   end
 
   class << self
@@ -64,18 +84,15 @@ class Element < Browser::DOM::Element::Custom
         # then check to see if there is a property on the underlying JS object
         # or an attribute set on the element
         # If neither has a value then use our default
-        if _properties[name].nil?
-          value = @native.JS[name] || self[name] || default
-          _properties[name] = StandardProcedure::Signal::Attribute.send type, value
-        end
-        _properties[name].get
+        _properties[name] ||= _convert(@native.JS[name] || self[name] || default, type)
+        _properties[name]
       end
 
       define_method :"#{name}=" do |value|
-        _properties[name] ||= StandardProcedure::Signal::Attribute.send(type, default)
-        _properties[name].set value
+        value = _convert(value, type)
+        _properties[name] = value
         # Keep the underlying JS object in sync
-        @native.JS[name] = _properties[name].peek.to_n
+        @native.JS[name] = value.to_n
         value
       end
 

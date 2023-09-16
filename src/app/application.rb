@@ -35,11 +35,9 @@ class Application < Element
   end
 
   def login_as email, password
-    send(:post, "/logins.json", email: email, password: password).then do |response|
+    fetch(:post, "/logins.json", email: email, password: password).then do |response|
       self.token = response.json["reference"]
       on_token_changed nil, token
-    end.fail do |error|
-      raise LoginFailed.new(error)
     end
   end
 
