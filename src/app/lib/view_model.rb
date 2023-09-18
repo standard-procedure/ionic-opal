@@ -1,6 +1,17 @@
 class ViewModel < StandardProcedure::Signal::Attribute::Hash
+  attr_reader :collection
+
+  def initialize collection:, **data
+    @collection = collection
+    super data
+  end
+
   def id
     self[:id].to_i
+  end
+
+  def storage
+    collection.storage
   end
 
   class << self

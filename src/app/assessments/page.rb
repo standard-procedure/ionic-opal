@@ -1,7 +1,8 @@
 require_relative "../candidates/list"
 
-module Assessments
+class Assessments
   class Page < Element
+    property :account_id, type: :integer
     property :assessment_id, type: :integer
     property :title
 
@@ -20,9 +21,17 @@ module Assessments
     end
 
     def load_assessment
-      application.fetch(:get, "/assessments/#{assessment_id}.json").then do |response|
-        self.title = response.json["title"]
+      assessment.observe do
+        self.title = assessment.title
       end
+    end
+
+    def account
+      application.accounts.find account_id
+    end
+
+    def assessment
+      account.assessments.find assessment_id
     end
 
     custom_element "assessment-page"

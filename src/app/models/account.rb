@@ -1,10 +1,10 @@
+require_relative "assessments"
+
 class Account < ViewModel
-  attr_reader :collection
   attributes :name, :parent_id, :address, :telephone, :email, :url
 
-  def initialize collection:, **data
-    @collection = collection
-    super data
+  def assessments
+    @assessments = Assessments.new storage, account: self
   end
 
   def parent

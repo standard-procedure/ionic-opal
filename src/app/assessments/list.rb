@@ -1,4 +1,4 @@
-module Assessments
+class Assessments
   class List < Element
     property :account_id, type: :integer
     property :assessments, type: :array, default: []
@@ -40,28 +40,32 @@ module Assessments
     end
 
     def render_item assessment, dom
-      dom.ion_item href: "/assessments/#{assessment["id"]}" do
+      dom.ion_item href: "/accounts/#{account.id}/assessments/#{assessment.id}" do
         dom.ion_label do
-          assessment["title"].to_s
+          assessment.title.to_s
         end
       end
     end
 
+    def account
+      @account ||= application.accounts.find account_id
+    end
+
     def load_assessments
       promise do
-        application.fetch(:get, "/accounts/#{account_id}/assessments.json?page=#{page_number}").then do |response|
-          self.assessments = response.json
-          response.json
+        account.assessments.where(page: page_number).then do |results|
+          self.assessments = assessments + results
+          results
         end
       end
     end
 
     def load_next_page
       self.page_number = page_number + 1
-      load_assessments.then do |data|
+      load_assessments.then do |results|
         at_css("#assessments-list").add_child do |dom|
-          data.each do |item|
-            render_item item, dom
+          results.each do |assessment|
+            render_item assessment, dom
           end
         end
         data

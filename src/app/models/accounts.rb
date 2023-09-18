@@ -28,7 +28,9 @@ class Accounts
     promise do
       storage.fetch(:get, "/accounts.json?page=#{page}").then do |response|
         response.json.collect do |data|
-          find(data["id"], fetch: false).set data
+          find(data["id"], fetch: false).tap do |account|
+            account.set data
+          end
         end
       end
     end
