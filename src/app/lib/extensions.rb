@@ -19,6 +19,10 @@ class NilClass
 end
 
 class String
+  def self.inflector
+    @inflector ||= Dry::Inflector.new
+  end
+
   def blank?
     self == ""
   end
@@ -27,19 +31,55 @@ class String
     !blank?
   end
 
+  def inflector
+    self.class.inflector
+  end
+
+  def inflections
+    inflector.send :inflections
+  end
+
   def kebabify
-    tr "_", "-"
+    inflector.dasherize self
   end
 
   def snakeify
-    tr "-", "_"
+    input = gsub("::", "/")
+    input = input.gsub(inflections.acronyms.regex) do
+      m1 = Regexp.last_match(1)
+      m2 = Regexp.last_match(2)
+      "#{m1 ? "_" : ""}#{m2.downcase}"
+    end
+    input = input.gsub(/([A-Z\d]+)([A-Z][a-z])/, '\1_\2')
+    input = input.gsub(/([a-z\d])([A-Z])/, '\1_\2')
+    input = input.tr("-", "_")
+    input.downcase
   end
 
-  def camelify
-    first, *rest = split("_")
-    first = first.downcase
-    rest = rest.map(&:capitalize)
-    ([first] + rest).join
+  def camelify upper = false
+    input = sub(/^[a-z\d]*/) { |match| inflections.acronyms.apply_to(match, capitalize: upper) }
+    input = input.gsub(%r{(?:[_-]|(/))([a-z\d]*)}i) do
+      m1 = Regexp.last_match(1)
+      m2 = Regexp.last_match(2)
+      "#{m1}#{inflections.acronyms.apply_to(m2)}"
+    end
+    input.gsub("/", "::")
+  end
+
+  def dehumpify
+    inflector.underscore self
+  end
+
+  def to_plural
+    inflector.pluralize self
+  end
+
+  def to_singular
+    inflector.singularize self
+  end
+
+  def to_class
+    inflector.constantize self
   end
 end
 

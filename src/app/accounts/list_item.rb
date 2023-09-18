@@ -1,4 +1,4 @@
-module Accounts
+class Accounts
   class ListItem < Element
     property :id
     property :account_id, type: :integer
@@ -27,7 +27,7 @@ module Accounts
     end
 
     def account
-      @account ||= application.account(account_id)
+      @account ||= application.accounts.find account_id
     end
 
     custom_element "account-list-item"

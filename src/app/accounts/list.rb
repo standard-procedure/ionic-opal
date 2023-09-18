@@ -1,6 +1,6 @@
 require_relative "list_item"
 
-module Accounts
+class Accounts
   class List < Element
     property :accounts, type: :array, default: []
     property :page_number, type: :integer, default: 1
@@ -46,7 +46,7 @@ module Accounts
 
     def load_accounts
       promise do
-        application.accounts(page: page_number).then do |results|
+        application.accounts.where(page: page_number).then do |results|
           self.accounts = accounts + results
           results
         end

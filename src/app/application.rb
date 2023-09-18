@@ -1,8 +1,8 @@
 require "base64"
+require_relative "models/accounts"
 require_relative "ui/header"
 require_relative "ui/menu"
 require_relative "ui/icon"
-require_relative "account"
 require_relative "login/page"
 require_relative "dashboard/page"
 require_relative "accounts/page"
@@ -12,11 +12,6 @@ class Application < Element
   property :token
   property :href
   property :name
-
-  def initialize node
-    super node
-    @accounts = {}
-  end
 
   def render
     self.inner_html = <<~HTML
@@ -76,29 +71,8 @@ class Application < Element
     redraw if logged_in?
   end
 
-  def account id, auto_load: true
-    id = id.to_i
-    if @accounts[id].nil?
-      @accounts[id] = Account.new id: id
-      if auto_load
-        next_tick do
-          fetch(:get, "/account/#{id}.json").then do |response|
-            @accounts[id].set response.json
-          end
-        end
-      end
-    end
-    @accounts[id]
-  end
-
-  def accounts page: 1
-    promise do
-      fetch(:get, "/accounts.json?page=#{page}").then do |response|
-        response.json.collect do |data|
-          account(data["id"], auto_load: false).set data
-        end
-      end
-    end
+  def accounts
+    @accounts ||= Accounts.new self
   end
 
   custom_element "application-frame"

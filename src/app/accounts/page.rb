@@ -1,6 +1,6 @@
 require_relative "../assessments/list"
 
-module Accounts
+class Accounts
   class Page < Element
     property :account_id, type: :integer
     property :name
@@ -23,14 +23,14 @@ module Accounts
 
     def load_account
       account.observe do
-        self.name = account[:name]
-        self.parent_id = account[:parent_id]
+        self.name = account.name
+        self.parent_id = account.parent_id
         redraw
       end
     end
 
     def account
-      @account ||= application.account(account_id)
+      @account ||= application.accounts.find account_id
     end
 
     custom_element "account-page"

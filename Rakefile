@@ -5,6 +5,7 @@ require "opal"
 require "opal-browser"
 Opal.append_path "src/app"
 Opal.use_gem "standard-procedure-signal"
+Opal.use_gem "dry-inflector"
 require "opal/rspec/rake_task"
 Opal::Config.source_map_enabled = true
 Opal::Config.esm = false

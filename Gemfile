@@ -18,4 +18,5 @@ end
 
 gem "opal"
 gem "opal-browser"
+gem "dry-inflector"
 gem "standard-procedure-signal"
