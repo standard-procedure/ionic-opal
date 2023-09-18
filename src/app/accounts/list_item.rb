@@ -15,6 +15,19 @@ module Accounts
 
     def on_attached
       self.id = "account-list-item-#{account_id}"
+      load_account
+    end
+
+    def load_account
+      account.observe do
+        self.name = account[:name]
+        self.parent_id = account[:parent_id]
+        redraw
+      end
+    end
+
+    def account
+      @account ||= application.account(account_id)
     end
 
     custom_element "account-list-item"

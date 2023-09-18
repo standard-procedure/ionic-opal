@@ -22,11 +22,15 @@ module Accounts
     end
 
     def load_account
-      application.fetch(:get, "/accounts/#{account_id}.json").then do |response|
-        self.name = response.json["name"]
-        self.parent_id = response.json["parent_id"]
+      account.observe do
+        self.name = account[:name]
+        self.parent_id = account[:parent_id]
         redraw
       end
+    end
+
+    def account
+      @account ||= application.account(account_id)
     end
 
     custom_element "account-page"

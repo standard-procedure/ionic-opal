@@ -46,9 +46,9 @@ module Accounts
 
     def load_accounts
       promise do
-        application.fetch(:get, "/accounts.json?page=#{page_number}").then do |response|
-          self.accounts = accounts + response.json
-          response.json
+        application.accounts(page: page_number).then do |results|
+          self.accounts = accounts + results
+          results
         end
       end
     end

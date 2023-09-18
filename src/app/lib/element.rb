@@ -54,14 +54,15 @@ class Element < Browser::DOM::Element::Custom
     end
 
     def _convert value, type
-      return nil if value.nil?
       case type
-      when :integer then value.to_i
-      when :float then value.to_f
-      when :date then value.is_a?(Date) ? value : Date.parse(value)
-      when :time then value.is_a?(Time) ? value : Time.new(value)
       when :array then value.nil? ? [] : value
       when :hash then value.nil? ? {} : value
+      when nil then nil
+      when :integer then value.to_i
+      when :float then value.to_f
+      when :text then value.to_s
+      when :date then value.is_a?(Date) ? value : Date.parse(value)
+      when :time then value.is_a?(Time) ? value : Time.new(value)
       else value
       end
     end
