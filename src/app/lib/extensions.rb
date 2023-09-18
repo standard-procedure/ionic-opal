@@ -85,8 +85,8 @@ class String
   def to_class
     inflector.constantize self
   end
-  alias_method :classify, :to_class
-  alias_method :modulify, :to_class
+  alias_method :constantinople, :to_class
+  alias_method :constantify, :to_class
 end
 
 class Array
