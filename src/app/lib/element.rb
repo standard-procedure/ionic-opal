@@ -25,10 +25,8 @@ class Element < Browser::DOM::Element::Custom
     end
 
     def attached
-      next_tick do
-        redraw
-        on_attached
-      end
+      on_attached
+      redraw
     end
 
     def detached
@@ -36,10 +34,8 @@ class Element < Browser::DOM::Element::Custom
     end
 
     def adopted
-      next_tick do
-        redraw
-        on_adopted
-      end
+      on_adopted
+      redraw
     end
 
     def attribute_changed attribute, old_value, new_value
@@ -57,8 +53,12 @@ class Element < Browser::DOM::Element::Custom
       end
     end
 
+    # Type coercions
+    # Ruby objects - leave them untouched
+    # Otherwise convert into the given type, dealing with nils as appropriate
     def _convert value, type
       case type
+      when :ruby then value
       when :array then value.nil? ? [] : value
       when :hash then value.nil? ? {} : value
       when nil then nil
@@ -103,8 +103,8 @@ class Element < Browser::DOM::Element::Custom
       define_method :"#{name}=" do |value|
         value = _convert(value, type)
         _properties[name] = value
-        # Keep the underlying JS object in sync
-        @native.JS[native_property_name] = value.to_n
+        # Keep the underlying JS object in sync unless we're storing a ruby object
+        @native.JS[native_property_name] = value.to_n unless type == :ruby
         value
       end
 

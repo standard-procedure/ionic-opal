@@ -1,19 +1,19 @@
 class Assessments
   class ListItem < Element
-    property :account_id, type: :integer
-    property :assessment_id, type: :integer
+    property :account, type: :ruby
+    property :assessment, type: :ruby
     property :title
 
     def render
       inner_dom do |dom|
-        dom.ion_item href: "/accounts/#{account_id}/assessments/#{assessment_id}" do
+        dom.ion_item href: "/accounts/#{account.id}/assessments/#{assessment.id}" do
           dom.ion_label { title }
         end
       end
     end
 
     def on_attached
-      self.id = "assessment-list-item-#{assessment_id}"
+      self.id = "assessment-list-item-#{assessment.id}"
       load_assessment
     end
 
@@ -24,14 +24,6 @@ class Assessments
       end
     end
 
-    def account
-      @account ||= application.accounts.find account_id
-    end
-
-    def assessment
-      @assessment ||= account.assessments.find assessment_id
-    end
-
-    custom_element "account-list-item"
+    custom_element "assessment-list-item"
   end
 end

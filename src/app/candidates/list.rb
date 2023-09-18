@@ -1,7 +1,9 @@
+require_relative "list_item"
+
 class Candidates
   class List < Element
-    property :account_id, type: :integer
-    property :assessment_id, type: :integer
+    property :account, type: :ruby
+    property :assessment, type: :ruby
     property :page_number, type: :integer, default: 1
     property :candidates, type: :array, default: []
 
@@ -35,7 +37,11 @@ class Candidates
     end
 
     def render_candidate candidate, dom
-      dom.candidate_list_item assessment_id: assessment.id, candidate_id: candidate.id
+      dom.candidate_list_item.created do |i|
+        i.account = account
+        i.assessment = assessment
+        i.candidate = candidate
+      end
     end
 
     def on_attached
@@ -63,14 +69,6 @@ class Candidates
         end
         results
       end
-    end
-
-    def account
-      @account ||= application.accounts.find account_id
-    end
-
-    def assessment
-      @assessment ||= account.assessments.find assessment_id
     end
 
     custom_element "candidates-list"

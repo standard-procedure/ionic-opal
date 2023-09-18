@@ -1,43 +1,26 @@
 class Candidates
   class ListItem < Element
-    property :account_id, type: :integer
-    property :candidate_id, type: :integer
-    property :title
+    property :account, type: :ruby
+    property :assessment, type: :ruby
+    property :candidate, type: :ruby
+    property :name
 
     def render
       inner_dom do |dom|
-        dom.ion_item href: "/accounts/#{account_id}/assessments/#{assessment_id}" do
-          dom.ion_label { title }
+        dom.ion_item href: "/accounts/#{account.id}/assessments/#{assessment.id}/candidates/#{candidate.id}" do
+          dom.ion_label { name }
         end
       end
     end
 
     def on_attached
-      self.id = "assessment-list-item-#{assessment_id}"
-      load_assessment
-    end
-
-    def load_assessment
-      assessment.observe do
-        self.title = assessment.title
+      self.id = "candidate-list-item-#{candidate.id}"
+      candidate.observe do
+        self.name = candidate.name
         redraw
       end
     end
 
-    def account
-      @account ||= application.accounts.find account_id
-    end
-
-    def assessment
-      @assessment ||= account.assessments.find assessment_id
-    end
-
-    custom_element "account-list-item"
-  end
-end
-
-dom.ion_item href: "/candidates/#{candidate.id}" do
-  dom.ion_label do
-    candidate.name.to_s
+    custom_element "candidate-list-item"
   end
 end

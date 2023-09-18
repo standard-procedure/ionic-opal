@@ -1,13 +1,16 @@
+require_relative "list_item"
+
 class Assessments
   class List < Element
-    property :account_id, type: :integer
+    property :account, type: :ruby
     property :assessments, type: :array, default: []
     property :page_number, type: :integer, default: 1
+    property :list, type: :ruby
 
     def render
       inner_dom do |dom|
         dom.ion_content class: "ion-padding" do
-          dom.ion_list id: "assessments-list" do
+          dom.ion_list do
             if assessments.any?
               dom.ion_list_header do
                 dom.ion_label { "Assesssments" }
@@ -20,6 +23,8 @@ class Assessments
                 dom.ion_label { "No Assesssments" }
               end
             end
+          end.created do |l|
+            self.list = l
           end
           dom.ion_infinite_scroll do
             dom.ion_infinite_scroll_content
@@ -40,22 +45,17 @@ class Assessments
     end
 
     def render_item assessment, dom
-      dom.assessment_list_item account_id: account.id, assessment_id: assessment.id
-    end
-
-    def account
-      @account ||= application.accounts.find account_id
+      dom.assessment_list_item.created do |i|
+        i.account = account
+        i.assessment = assessment
+      end
     end
 
     def load_assessments
       promise do
-        if account_id == 0
-          []
-        else
-          account.assessments.where(page: page_number).then do |results|
-            self.assessments = assessments + results
-            results
-          end
+        account.assessments.where(page: page_number).then do |results|
+          self.assessments = assessments + results
+          results
         end
       end
     end
@@ -63,7 +63,7 @@ class Assessments
     def load_next_page
       self.page_number = page_number + 1
       load_assessments.then do |results|
-        at_css("#assessments-list").add_child do |dom|
+        list.add_child do |dom|
           results.each do |assessment|
             render_item assessment, dom
           end

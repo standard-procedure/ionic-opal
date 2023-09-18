@@ -10,7 +10,10 @@ class Assessments
       inner_dom do |dom|
         dom.ui_header title: title
         dom.ion_content class: "ion-padding" do
-          dom.candidates_list assessment_id: assessment_id
+          dom.candidates_list.created do |l|
+            l.assessment = assessment
+            l.account = account
+          end
         end
       end
     end

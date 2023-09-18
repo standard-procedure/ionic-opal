@@ -34,8 +34,10 @@ class Accounts
       end
     end
 
-    def render_account data, dom
-      dom.account_list_item account_id: data["id"], name: data["name"]
+    def render_account account, dom
+      dom.account_list_item(account_id: account.id, name: account.name).created do |list_item|
+        list_item.account = account
+      end
     end
 
     def on_attached

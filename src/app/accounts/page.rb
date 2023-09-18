@@ -5,13 +5,14 @@ class Accounts
     property :account_id, type: :integer
     property :name
     property :parent_id, type: :integer
+    property :header, type: :ruby
 
     def render
       inner_dom do |dom|
         dom.ui_header title: name
         dom.ion_content class: "ion-padding" do
-          if account_id.present?
-            dom.assessments_list account_id: account_id
+          dom.assessments_list.created do |list|
+            list.account = account
           end
         end
       end
