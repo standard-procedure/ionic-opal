@@ -26,6 +26,7 @@ class Assessments
           end.created do |l|
             self.list = l
           end
+
           dom.ion_infinite_scroll do
             dom.ion_infinite_scroll_content
           end.on "ionInfinite" do |event|

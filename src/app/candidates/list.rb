@@ -6,11 +6,12 @@ class Candidates
     property :assessment, type: :ruby
     property :page_number, type: :integer, default: 1
     property :candidates, type: :array, default: []
+    property :list, type: :ruby
 
     def render
       inner_dom do |dom|
         dom.ion_content class: "ion-padding" do
-          dom.ion_list id: "candidates-list" do
+          dom.ion_list do
             if candidates.any?
               dom.ion_list_header do
                 dom.ion_label { "Candidates" }
@@ -23,13 +24,16 @@ class Candidates
                 dom.ion_label { "No candidates" }
               end
             end
-            dom.ion_infinite_scroll do
-              dom.ion_infinite_scroll_content
-            end.on "ionInfinite" do |event|
-              load_next_page.then do |data|
-                event.target.complete
-                event.target[:disabled] = data.empty?
-              end
+          end.created do |list|
+            self.list = list
+          end
+
+          dom.ion_infinite_scroll do
+            dom.ion_infinite_scroll_content
+          end.on "ionInfinite" do |event|
+            load_next_page.then do |data|
+              event.target.complete
+              event.target[:disabled] = data.empty?
             end
           end
         end
@@ -62,7 +66,7 @@ class Candidates
     def load_next_page
       self.page_number = page_number + 1
       load_candidates.then do |results|
-        at_css("#candidates-list").add_child do |dom|
+        list.add_child do |dom|
           results.each do |candidate|
             render_candidate candidate, dom
           end
