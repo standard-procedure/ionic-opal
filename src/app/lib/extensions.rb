@@ -69,18 +69,24 @@ class String
   def dehumpify
     inflector.underscore self
   end
+  alias_method :llamify, :dehumpify
+  alias_method :alpacify, :dehumpify
 
   def to_plural
     inflector.pluralize self
   end
+  alias_method :manyfy, :to_plural
 
   def to_singular
     inflector.singularize self
   end
+  alias_method :alonify, :to_singular
 
   def to_class
     inflector.constantize self
   end
+  alias_method :classify, :to_class
+  alias_method :modulify, :to_class
 end
 
 class Array
