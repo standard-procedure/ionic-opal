@@ -15,7 +15,7 @@ class Accounts
       collection[id] = Account.new collection: self, id: id
       if fetch
         next_tick do
-          storage.fetch(:get, "/account/#{id}.json").then do |response|
+          storage.fetch(:get, "/accounts/#{id}.json").then do |response|
             collection[id].set response.json
           end
         end

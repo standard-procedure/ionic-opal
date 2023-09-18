@@ -40,11 +40,7 @@ class Assessments
     end
 
     def render_item assessment, dom
-      dom.ion_item href: "/accounts/#{account.id}/assessments/#{assessment.id}" do
-        dom.ion_label do
-          assessment.title.to_s
-        end
-      end
+      dom.assessment_list_item account_id: account.id, assessment_id: assessment.id
     end
 
     def account
@@ -53,9 +49,13 @@ class Assessments
 
     def load_assessments
       promise do
-        account.assessments.where(page: page_number).then do |results|
-          self.assessments = assessments + results
-          results
+        if account_id == 0
+          []
+        else
+          account.assessments.where(page: page_number).then do |results|
+            self.assessments = assessments + results
+            results
+          end
         end
       end
     end

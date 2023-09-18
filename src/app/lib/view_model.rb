@@ -14,6 +14,10 @@ class ViewModel < StandardProcedure::Signal::Attribute::Hash
     collection.storage
   end
 
+  def ready?
+    id != 0
+  end
+
   class << self
     def find id
       collection_class.find id

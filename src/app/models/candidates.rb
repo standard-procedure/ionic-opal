@@ -1,24 +1,27 @@
 require_relative "account"
 require_relative "assessment"
+require_relative "candidate"
 
-class Assessments
-  def initialize storage, account:
+class Candidates
+  def initialize storage, account:, assessment:
     @storage = storage
     @account = account
+    @assessment = assessment
     @collection = {}
   end
 
   attr_reader :collection
   attr_reader :storage
   attr_reader :account
+  attr_reader :assessment
 
   def find id, fetch: true
     id = id.to_i
     if collection[id].nil?
-      collection[id] = Assessment.new collection: self, id: id, account: account
+      collection[id] = Candidate.new collection: self, id: id, account: account, assessment: assessment
       if fetch
         next_tick do
-          storage.fetch(:get, "/assessments/#{id}.json").then do |response|
+          storage.fetch(:get, "/candidates/#{id}.json").then do |response|
             collection[id].set response.json
           end
         end
@@ -29,11 +32,10 @@ class Assessments
 
   def where page: 1
     promise do
-      return [] unless account.ready?
-      storage.fetch(:get, "/accounts/#{account.id}/assessments.json?page=#{page}").then do |response|
+      storage.fetch(:get, "/assessments/#{assessment.id}/candidates.json?page=#{page}").then do |response|
         response.json.collect do |data|
-          find(data["id"], fetch: false).tap do |assessment|
-            assessment.set data
+          find(data["id"], fetch: false).tap do |candidate|
+            candidate.set data
           end
         end
       end

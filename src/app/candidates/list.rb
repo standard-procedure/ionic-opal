@@ -1,5 +1,6 @@
-module Candidates
+class Candidates
   class List < Element
+    property :account_id, type: :integer
     property :assessment_id, type: :integer
     property :page_number, type: :integer, default: 1
     property :candidates, type: :array, default: []
@@ -34,11 +35,7 @@ module Candidates
     end
 
     def render_candidate candidate, dom
-      dom.ion_item href: "/candidates/#{candidate["id"]}" do
-        dom.ion_label do
-          candidate["name"].to_s
-        end
-      end
+      dom.candidate_list_item assessment_id: assessment.id, candidate_id: candidate.id
     end
 
     def on_attached
@@ -49,23 +46,31 @@ module Candidates
 
     def load_candidates
       promise do
-        application.fetch(:get, "/assessments/#{assessment_id}/candidates.json?page=#{page_number}").then do |response|
-          self.candidates = candidates + response.json
-          response.json
+        assessment.candidates.where(page: page_number).then do |results|
+          self.candidates = candidates + results
+          results
         end
       end
     end
 
     def load_next_page
       self.page_number = page_number + 1
-      load_candidates.then do |data|
+      load_candidates.then do |results|
         at_css("#candidates-list").add_child do |dom|
-          data.each do |candidate|
+          results.each do |candidate|
             render_candidate candidate, dom
           end
         end
-        data
+        results
       end
+    end
+
+    def account
+      @account ||= application.accounts.find account_id
+    end
+
+    def assessment
+      @assessment ||= account.assessments.find assessment_id
     end
 
     custom_element "candidates-list"

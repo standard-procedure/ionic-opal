@@ -1,28 +1,26 @@
-require_relative "../candidates/list"
-
-class Assessments
-  class Page < Element
+class Candidates
+  class ListItem < Element
     property :account_id, type: :integer
-    property :assessment_id, type: :integer
+    property :candidate_id, type: :integer
     property :title
 
     def render
       inner_dom do |dom|
-        dom.ui_header title: title
-        dom.ion_content class: "ion-padding" do
-          dom.candidates_list assessment_id: assessment_id
+        dom.ion_item href: "/accounts/#{account_id}/assessments/#{assessment_id}" do
+          dom.ion_label { title }
         end
       end
     end
 
     def on_attached
+      self.id = "assessment-list-item-#{assessment_id}"
       load_assessment
-      redraw
     end
 
     def load_assessment
       assessment.observe do
         self.title = assessment.title
+        redraw
       end
     end
 
@@ -34,6 +32,12 @@ class Assessments
       @assessment ||= account.assessments.find assessment_id
     end
 
-    custom_element "assessment-page"
+    custom_element "account-list-item"
+  end
+end
+
+dom.ion_item href: "/candidates/#{candidate.id}" do
+  dom.ion_label do
+    candidate.name.to_s
   end
 end

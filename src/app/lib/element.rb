@@ -25,8 +25,10 @@ class Element < Browser::DOM::Element::Custom
     end
 
     def attached
-      redraw
-      on_attached
+      next_tick do
+        redraw
+        on_attached
+      end
     end
 
     def detached
@@ -34,8 +36,10 @@ class Element < Browser::DOM::Element::Custom
     end
 
     def adopted
-      redraw
-      on_adopted
+      next_tick do
+        redraw
+        on_adopted
+      end
     end
 
     def attribute_changed attribute, old_value, new_value

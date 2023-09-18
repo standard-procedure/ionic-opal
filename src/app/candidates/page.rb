@@ -1,6 +1,10 @@
-module Candidates
+class Candidates
   class Page < Element
-    property :candidates, type: :array, default: []
+    property :name
+    property :full_name
+    property :first_name
+    property :last_name
+    property :email
 
     def render
       inner_dom do |dom|
@@ -10,7 +14,7 @@ module Candidates
             candidates.each do |candidate|
               dom.e "ion-item", href: "/candidates/#{candidate["id"]}" do
                 dom.e "ion-label" do
-                  candidate["name"].to_s
+                  candidate.full_name.to_s
                 end
               end
             end
@@ -20,10 +24,7 @@ module Candidates
     end
 
     def on_attached
-      Application.current.fetch(:get, "/candidates.json").then do |response|
-        self.candidates = response.json
-        redraw
-      end
+      redraw
     end
 
     custom_element "candidates-page"

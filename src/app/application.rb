@@ -1,6 +1,7 @@
 require "base64"
 require_relative "models/accounts"
 require_relative "models/assessments"
+require_relative "models/candidates"
 require_relative "ui/header"
 require_relative "ui/menu"
 require_relative "ui/icon"
