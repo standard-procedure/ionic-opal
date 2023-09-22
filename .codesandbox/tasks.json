@@ -1,0 +1,42 @@
+{
+  "setupTasks": [
+    {
+      "name": "Install Dependencies",
+      "command": "bundle install"
+    }
+  ],
+  "tasks": {
+    "install-dependencies": {
+      "name": "Install Dependencies",
+      "command": "bundle install",
+      "runAtStart": true,
+      "restartOn": {
+        "files": [
+          "Gemfile.lock"
+        ],
+        "branch": true
+      }
+    },
+    "lint": {
+      "name": "Lint",
+      "command": "rake lint"
+    },
+    "spec": {
+      "name": "Specs",
+      "command": "rake spec"
+    },
+    "build": {
+      "name": "Build",
+      "command": "bundle exec rake build",
+      "runAtStart": true,
+      "restartOn": {
+        "branch": true,
+        "files": [
+          "**/*.rb",
+          "**/*.html",
+          "**/*.css"
+        ]
+      }
+    }
+  }
+}
