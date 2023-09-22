@@ -1,20 +1,34 @@
 {
+  // These tasks will run in order when initializing your CodeSandbox project.
   "setupTasks": [
     {
       "name": "Install Dependencies",
       "command": "bundle install"
     }
   ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
   "tasks": {
     "install-dependencies": {
       "name": "Install Dependencies",
       "command": "bundle install",
       "runAtStart": true,
       "restartOn": {
-        "files": [
-          "Gemfile.lock"
-        ],
-        "branch": true
+        "files": ["Gemfile.lock"],
+        "branch": true,
+        "resume": false
+      }
+    },
+    "server": {
+      "name": "Start development server",
+      "command": "rackup",
+      "preview": {
+        "port": 9292
+      },
+      "runAtStart": true,
+      "restartOn": {
+        "branch": true,
+        "resume": true
       }
     },
     "lint": {
@@ -23,20 +37,24 @@
     },
     "spec": {
       "name": "Specs",
-      "command": "rake spec"
+      "command": "rake spec",
+      "preview": {
+        "port": 3000
+      }
     },
     "build": {
       "name": "Build",
       "command": "bundle exec rake build",
       "runAtStart": true,
       "restartOn": {
+        "files": ["src/**/*.rb", "src/**/*.html", "src/**/*.css"],
         "branch": true,
-        "files": [
-          "**/*.rb",
-          "**/*.html",
-          "**/*.css"
-        ]
+        "resume": false
       }
+    },
+    "ruby:typecheck": {
+      "name": "Typecheck",
+      "command": "solargraph typecheck"
     }
   }
 }
