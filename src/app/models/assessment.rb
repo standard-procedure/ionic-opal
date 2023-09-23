@@ -1,5 +1,6 @@
 class Assessment < ViewModel
-  attributes :account_id, :title
+  attributes :title, :starting_on, :ending_on, :status
+  belongs_to :account, :customer_id
 
   def candidates
     @candidates ||= Signal.array_attribute []
@@ -10,10 +11,4 @@ class Assessment < ViewModel
     end
     @candidates
   end
-
-  def account
-    @account ||= application.accounts.find account_id
-  end
-
-  attr_writer :account
 end

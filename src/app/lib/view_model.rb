@@ -30,5 +30,22 @@ class ViewModel < StandardProcedure::Signal::Attribute::Hash
         self[name] = value
       end
     end
+
+    def belongs_to model, attribute_name = nil
+      collection = model.to_s.to_plural
+      model = model.to_sym
+      attribute_name = attribute_name.to_sym
+
+      attribute attribute_name, type: :integer
+
+      define_method model do
+        model_id = send attribute_name
+        self[model] ||= collection.to_class.find model_id
+      end
+
+      define_method :"#{name}=" do |value|
+        self[model] = value
+      end
+    end
   end
 end

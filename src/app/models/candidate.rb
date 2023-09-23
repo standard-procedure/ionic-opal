@@ -1,11 +1,4 @@
 class Candidate < ViewModel
-  attributes :course_id, :name, :full_name, :first_name, :last_name, :email
-
-  def assessment
-    @assessment ||= application.assessments.find course_id
-  end
-
-  def assessment= value
-    @asessment = value
-  end
+  attributes :name, :full_name, :first_name, :last_name, :email
+  belongs_to :assessment, :course_id
 end
