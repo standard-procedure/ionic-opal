@@ -42,8 +42,6 @@ class Candidates
 
     def render_candidate candidate, dom
       dom.candidate_list_item.created do |i|
-        i.account = account
-        i.assessment = assessment
         i.candidate = candidate
       end
     end
@@ -55,6 +53,7 @@ class Candidates
     def load_candidates
       Signal.observe do
         self.candidates = assessment.candidates.get
+        redraw
       end
     end
 

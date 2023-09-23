@@ -1,7 +1,5 @@
 class Candidates
   class ListItem < Element
-    property :account, type: :ruby
-    property :assessment, type: :ruby
     property :candidate, type: :ruby
     property :name
 
