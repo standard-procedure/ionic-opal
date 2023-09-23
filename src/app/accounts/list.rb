@@ -51,7 +51,7 @@ class Accounts
     end
 
     def load_accounts
-      promise do
+      async do
         application.accounts.where(page: page_number).then do |results|
           self.accounts = accounts + results
           results

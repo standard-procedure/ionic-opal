@@ -1,8 +1,8 @@
 class ViewModel < StandardProcedure::Signal::Attribute::Hash
-  attr_reader :collection
+  attr_reader :application
 
-  def initialize collection:, **data
-    @collection = collection
+  def initialize application:, **data
+    @application = application
     super data
   end
 
@@ -10,23 +10,11 @@ class ViewModel < StandardProcedure::Signal::Attribute::Hash
     self[:id].to_i
   end
 
-  def storage
-    collection.storage
-  end
-
   def ready?
     id != 0
   end
 
   class << self
-    def find id
-      collection_class.find id
-    end
-
-    def where page: 1
-      collection_class.where page: page
-    end
-
     def attributes *names
       names.each do |name|
         attribute name
@@ -41,18 +29,6 @@ class ViewModel < StandardProcedure::Signal::Attribute::Hash
       define_method :"#{name}=" do |value|
         self[name] = value
       end
-    end
-
-    def singular_name
-      name.dehumpfiy
-    end
-
-    def collection_name
-      name.dehumpfiy.to_plural
-    end
-
-    def collection_class
-      collection_name.to_class
     end
   end
 end

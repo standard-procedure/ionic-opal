@@ -3,7 +3,7 @@ require_relative "list_item"
 class Assessments
   class List < Element
     property :account, type: :ruby
-    property :assessments, type: :array, default: []
+    property :assessments, type: :array
     property :page_number, type: :integer, default: 1
     property :list, type: :ruby
 
@@ -40,7 +40,12 @@ class Assessments
     end
 
     def on_attached
-      load_assessments.then do
+      load_assessments
+    end
+
+    def load_assessments
+      Signal.observe do
+        self.assessments = account.assessments.get
         redraw
       end
     end
@@ -49,15 +54,6 @@ class Assessments
       dom.assessment_list_item.created do |i|
         i.account = account
         i.assessment = assessment
-      end
-    end
-
-    def load_assessments
-      promise do
-        account.assessments.where(page: page_number).then do |results|
-          self.assessments = assessments + results
-          results
-        end
       end
     end
 

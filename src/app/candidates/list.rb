@@ -49,17 +49,12 @@ class Candidates
     end
 
     def on_attached
-      load_candidates.then do
-        redraw
-      end
+      load_candidates
     end
 
     def load_candidates
-      promise do
-        assessment.candidates.where(page: page_number).then do |results|
-          self.candidates = candidates + results
-          results
-        end
+      Signal.observe do
+        self.candidates = assessment.candidates.get
       end
     end
 

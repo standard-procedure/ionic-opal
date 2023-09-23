@@ -14,11 +14,11 @@ class Assessments
 
     def on_attached
       self.id = "assessment-list-item-#{assessment.id}"
-      load_assessment
+      observe_assessment
     end
 
-    def load_assessment
-      assessment.observe do
+    def observe_assessment
+      Signal.observe do
         self.title = assessment.title
         redraw
       end

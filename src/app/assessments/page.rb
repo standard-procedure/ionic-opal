@@ -20,12 +20,12 @@ class Assessments
 
     def on_attached
       load_assessment
-      redraw
     end
 
     def load_assessment
-      assessment.observe do
+      Signal.observe do
         self.title = assessment.title
+        redraw
       end
     end
 
@@ -34,7 +34,7 @@ class Assessments
     end
 
     def assessment
-      @assessment ||= account.assessments.find assessment_id
+      @assessment ||= application.assessments.find assessment_id
     end
 
     custom_element "assessment-page"

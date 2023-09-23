@@ -7,7 +7,7 @@ class Candidates
 
     def render
       inner_dom do |dom|
-        dom.ion_item href: "/accounts/#{account.id}/assessments/#{assessment.id}/candidates/#{candidate.id}" do
+        dom.ion_item href: "/candidates/#{candidate.id}" do
           dom.ion_label { name }
         end
       end
@@ -15,7 +15,11 @@ class Candidates
 
     def on_attached
       self.id = "candidate-list-item-#{candidate.id}"
-      candidate.observe do
+      observe_candidate
+    end
+
+    def observe_candidate
+      Signal.observe do
         self.name = candidate.name
         redraw
       end

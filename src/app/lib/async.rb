@@ -1,5 +1,5 @@
 module Kernel
-  def promise &block
+  def async &block
     Promise.new.tap do |promise|
       promise.resolve block.call
     rescue => ex

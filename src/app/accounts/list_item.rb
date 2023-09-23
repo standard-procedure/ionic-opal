@@ -15,11 +15,11 @@ class Accounts
 
     def on_attached
       self.id = "account-list-item-#{account.id}"
-      load_account
+      observe_account
     end
 
-    def load_account
-      account.observe do
+    def observe_account
+      Signal.observe do
         self.name = account.name
         self.parent_id = account.parent_id
         redraw

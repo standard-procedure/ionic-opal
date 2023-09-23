@@ -25,6 +25,7 @@ class Application < Element
   end
 
   def fetch method, uri, **params
+    puts "FETCHING #{uri} #{params}"
     Browser::HTTP.send(method, "#{href}#{uri}", **params) do |request|
       if logged_in?
         encoded = Base64.encode64 "USER:#{token}"
@@ -73,8 +74,15 @@ class Application < Element
     redraw if logged_in?
   end
 
-  def accounts
-    @accounts ||= Accounts.new self
+  [:accounts, :assessments, :candidates].each do |store|
+    define_method store do
+      store_class = store.to_s.capitalize.to_class
+      stores[store] ||= store_class.new(self)
+    end
+  end
+
+  def stores
+    @stores ||= {}
   end
 
   custom_element "application-frame"

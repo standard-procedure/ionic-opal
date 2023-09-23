@@ -24,7 +24,30 @@ class Candidates
     end
 
     def on_attached
-      redraw
+      puts "Page attached - #{candidate_id}"
+      load_candidate
+    end
+
+    def load_candidate
+      Signal.observe do
+        self.full_name = candidate.full_name
+        self.first_name = candidate.first_name
+        self.last_name = candidate.last_name
+        self.email = candidate.email
+        redraw
+      end
+    end
+
+    def account
+      assessment.account
+    end
+
+    def assessment
+      candidate.assessment
+    end
+
+    def candidate
+      @candidate ||= application.candidates.find candidate_id
     end
 
     custom_element "candidates-page"

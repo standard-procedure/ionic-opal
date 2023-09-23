@@ -2,6 +2,12 @@ class Assessment < ViewModel
   attributes :account, :title
 
   def candidates
-    @candidates ||= Candidates.new storage, account: account, assessment: self
+    @candidates ||= Signal.array_attribute []
+    if @candidates.get.empty?
+      application.candidates.where(assessment: self).then do |results|
+        candidates.set results
+      end
+    end
+    @candidates
   end
 end

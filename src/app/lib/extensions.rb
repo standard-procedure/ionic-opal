@@ -18,6 +18,21 @@ class NilClass
   end
 end
 
+module Dry
+  class Inflector
+    class Rules
+      def apply_to(word)
+        result = word
+        each do |rule, replacement|
+          result = word.gsub(rule, replacement)
+          break if result != word
+        end
+        result
+      end
+    end
+  end
+end
+
 class String
   def self.inflector
     @inflector ||= Dry::Inflector.new
@@ -78,12 +93,17 @@ class String
   alias_method :manyfy, :to_plural
 
   def to_singular
-    inflector.singularize self
+    result = dup
+    inflections.singulars.each do |rule, replacement|
+      result = gsub(rule, replacement)
+      break if result != self
+    end
+    result
   end
   alias_method :alonify, :to_singular
 
   def to_class
-    inflector.constantize self
+    Object.const_get(self, false)
   end
   alias_method :constantinople, :to_class
   alias_method :constantify, :to_class
