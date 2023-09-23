@@ -26,7 +26,7 @@ class Assessments
     application.fetch(:get, "/accounts/#{account.id}/assessments.json?page=#{page}").then do |results|
       results.json.map do |data|
         find(data["id"], fetch: false, account: account).tap do |assessment|
-          assessment.set data
+          assessment.set data.merge(account: account)
         end
       end
     end

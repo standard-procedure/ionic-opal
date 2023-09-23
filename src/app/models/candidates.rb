@@ -29,7 +29,7 @@ class Candidates
     application.fetch(:get, "/assessments/#{assessment.id}/candidates.json?page=#{page}").then do |response|
       response.json.collect do |data|
         find(data["id"], fetch: false).tap do |candidate|
-          candidate.set data
+          candidate.set data.merge(assesment: assessment)
         end
       end
     end
