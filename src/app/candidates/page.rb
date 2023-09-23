@@ -1,5 +1,7 @@
 class Candidates
   class Page < Element
+    property :assessment_id, type: :integer
+    property :candidate_id, type: :integer
     property :name
     property :full_name
     property :first_name
@@ -8,15 +10,15 @@ class Candidates
 
     def render
       inner_dom do |dom|
-        dom.e "ui-header", title: "Candidates"
-        dom.e "ion-content", class: "ion-padding" do
-          dom.e "ion-list" do
-            candidates.each do |candidate|
-              dom.e "ion-item", href: "/candidates/#{candidate["id"]}" do
-                dom.e "ion-label" do
-                  candidate.full_name.to_s
-                end
-              end
+        dom.ui_header title: candidate.full_name.to_s
+        dom.ion_content class: "ion-padding" do
+          dom.ion_card do
+            dom.ion_card_header do
+              dom.ion_card_title { candidate.full_name }
+            end
+
+            dom.ion_card_content do
+              candidate.email.to_s
             end
           end
         end
@@ -24,7 +26,6 @@ class Candidates
     end
 
     def on_attached
-      puts "Page attached - #{candidate_id}"
       load_candidate
     end
 
@@ -43,13 +44,13 @@ class Candidates
     end
 
     def assessment
-      candidate.assessment
+      @assessment ||= application.assessments.find assessment_id
     end
 
     def candidate
       @candidate ||= application.candidates.find candidate_id
     end
 
-    custom_element "candidates-page"
+    custom_element "candidate-page"
   end
 end

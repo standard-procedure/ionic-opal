@@ -13,11 +13,9 @@ class Candidates
   def find id, fetch: true
     id = id.to_i
     if @collection[id].nil?
-      puts "Building candidate #{id}"
       @collection[id] = Candidate.new application: application, id: id
       if fetch
         application.fetch(:get, "/candidates/#{id}.json").then do |response|
-          puts response.json
           @collection[id].set response.json
         end
       end

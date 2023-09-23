@@ -34,10 +34,9 @@
           component="assessment-page"
         ></ion-route>
         <ion-route
-          url="/candidates/:candidateId"
-          component="candidates-page"
+          url="/assessments/:assessmentId/candidates/:candidateId"
+          component="candidate-page"
         ></ion-route>
-        <ion-route url="/products" component="products-page"></ion-route>
         <ion-route-redirect id="login-guard" from="*"></ion-route-redirect>
       </ion-router>
       <application-frame

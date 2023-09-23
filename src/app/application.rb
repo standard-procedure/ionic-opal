@@ -9,6 +9,7 @@ require_relative "login/page"
 require_relative "dashboard/page"
 require_relative "accounts/page"
 require_relative "assessments/page"
+require_relative "candidates/page"
 
 class Application < Element
   property :token

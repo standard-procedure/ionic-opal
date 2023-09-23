@@ -5,7 +5,7 @@ class Candidates
 
     def render
       inner_dom do |dom|
-        dom.ion_item href: "/candidates/#{candidate.id}" do
+        dom.ion_item href: "/assessments/#{candidate.course_id}/candidates/#{candidate.id}" do
           dom.ion_label { name }
         end
       end
