@@ -25,7 +25,6 @@ class Application < Element
   end
 
   def fetch method, uri, **params
-    puts "FETCHING #{uri} #{params}"
     Browser::HTTP.send(method, "#{href}#{uri}", **params) do |request|
       if logged_in?
         encoded = Base64.encode64 "USER:#{token}"
