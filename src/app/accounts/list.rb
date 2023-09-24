@@ -8,31 +8,29 @@ class Accounts
 
     def render
       inner_dom do |dom|
-        dom.ion_content class: "ion-padding" do
-          dom.ion_list do
-            if accounts.any?
-              dom.ion_list_header do
-                dom.ion_label { "Accounts " }
-              end
-              accounts.each do |account|
-                render_account account, dom
-              end
-            else
-              dom.ion_list_header do
-                dom.ion_label { "No accounts" }
-              end
+        dom.ion_list do
+          if accounts.any?
+            dom.ion_list_header do
+              dom.ion_label { "Accounts " }
             end
-          end.created do |list|
-            self.list = list
+            accounts.each do |account|
+              render_account account, dom
+            end
+          else
+            dom.ion_list_header do
+              dom.ion_label { "No accounts" }
+            end
           end
+        end.created do |list|
+          self.list = list
+        end
 
-          dom.ion_infinite_scroll do
-            dom.ion_infinite_scroll_content
-          end.on "ionInfinite" do |event|
-            load_next_page.then do |data|
-              event.target.complete
-              event.target[:disabled] = data.empty?
-            end
+        dom.ion_infinite_scroll do
+          dom.ion_infinite_scroll_content
+        end.on "ionInfinite" do |event|
+          load_next_page.then do |accounts|
+            event.target.complete
+            event.target[:disabled] = accounts.empty?
           end
         end
       end
@@ -51,23 +49,21 @@ class Accounts
     end
 
     def load_accounts
-      async do
-        application.accounts.where(page: page_number).then do |results|
-          self.accounts = accounts + results
-          results
-        end
+      application.accounts.where(page: page_number).then do |results|
+        self.accounts = accounts + results
+        results
       end
     end
 
     def load_next_page
       self.page_number = page_number + 1
-      load_accounts.then do |data|
+      load_accounts.then do |results|
         list.add_child do |dom|
-          data.each do |account|
+          results.each do |account|
             render_account account, dom
           end
         end
-        data
+        results
       end
     end
 

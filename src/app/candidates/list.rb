@@ -10,31 +10,29 @@ class Candidates
 
     def render
       inner_dom do |dom|
-        dom.ion_content class: "ion-padding" do
-          dom.ion_list do
-            if candidates.any?
-              dom.ion_list_header do
-                dom.ion_label { "Candidates" }
-              end
-              candidates.each do |candidate|
-                render_candidate candidate, dom
-              end
-            else
-              dom.ion_list_header do
-                dom.ion_label { "No candidates" }
-              end
+        dom.ion_list do
+          if candidates.any?
+            dom.ion_list_header do
+              dom.ion_label { "Candidates" }
             end
-          end.created do |list|
-            self.list = list
+            candidates.each do |candidate|
+              render_candidate candidate, dom
+            end
+          else
+            dom.ion_list_header do
+              dom.ion_label { "No candidates" }
+            end
           end
+        end.created do |list|
+          self.list = list
+        end
 
-          dom.ion_infinite_scroll do
-            dom.ion_infinite_scroll_content
-          end.on "ionInfinite" do |event|
-            load_next_page.then do |data|
-              event.target.complete
-              event.target[:disabled] = data.empty?
-            end
+        dom.ion_infinite_scroll do
+          dom.ion_infinite_scroll_content
+        end.on "ionInfinite" do |event|
+          load_next_page.then do |results|
+            event.target.complete
+            event.target[:disabled] = results.empty?
           end
         end
       end
@@ -59,7 +57,7 @@ class Candidates
 
     def load_next_page
       self.page_number = page_number + 1
-      load_candidates.then do |results|
+      application.candidates.where(assessment: assessment, page: page_number).then do |results|
         list.add_child do |dom|
           results.each do |candidate|
             render_candidate candidate, dom

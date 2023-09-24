@@ -13,7 +13,7 @@ class Accounts
     id = id.to_i
     if collection[id].nil?
       collection[id] = Account.new application: application, id: id
-      if fetch
+      if fetch && id != 0
         next_tick do
           application.fetch(:get, "/accounts/#{id}.json").then do |response|
             collection[id].set response.json

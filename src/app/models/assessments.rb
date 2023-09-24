@@ -13,7 +13,7 @@ class Assessments
     id = id.to_i
     if @collection[id].nil?
       @collection[id] = Assessment.new application: application, id: id, **params
-      if fetch
+      if fetch && id != 0
         application.fetch(:get, "/assessments/#{id}.json").then do |response|
           @collection[id].set response.json
         end

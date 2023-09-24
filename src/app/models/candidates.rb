@@ -14,7 +14,7 @@ class Candidates
     id = id.to_i
     if @collection[id].nil?
       @collection[id] = Candidate.new application: application, id: id
-      if fetch
+      if fetch && id != 0
         application.fetch(:get, "/candidates/#{id}.json").then do |response|
           @collection[id].set response.json
         end

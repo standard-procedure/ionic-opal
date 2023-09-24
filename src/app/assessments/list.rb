@@ -9,31 +9,29 @@ class Assessments
 
     def render
       inner_dom do |dom|
-        dom.ion_content class: "ion-padding" do
-          dom.ion_list do
-            if assessments.any?
-              dom.ion_list_header do
-                dom.ion_label { "Assesssments" }
-              end
-              assessments.each do |assessment|
-                render_item assessment, dom
-              end
-            else
-              dom.ion_list_header do
-                dom.ion_label { "No Assesssments" }
-              end
+        dom.ion_list do
+          if assessments.any?
+            dom.ion_list_header do
+              dom.ion_label { "Assesssments" }
             end
-          end.created do |l|
-            self.list = l
+            assessments.each do |assessment|
+              render_item assessment, dom
+            end
+          else
+            dom.ion_list_header do
+              dom.ion_label { "No Assesssments" }
+            end
           end
+        end.created do |l|
+          self.list = l
+        end
 
-          dom.ion_infinite_scroll do
-            dom.ion_infinite_scroll_content
-          end.on "ionInfinite" do |event|
-            load_next_page.then do |data|
-              event.target.complete
-              event.target[:disabled] = data.empty?
-            end
+        dom.ion_infinite_scroll do
+          dom.ion_infinite_scroll_content
+        end.on "ionInfinite" do |event|
+          load_next_page.then do |results|
+            event.target.complete
+            event.target[:disabled] = results.empty?
           end
         end
       end
@@ -59,13 +57,13 @@ class Assessments
 
     def load_next_page
       self.page_number = page_number + 1
-      load_assessments.then do |results|
+      application.assessments.where(account: account, page: page_number).then do |results|
         list.add_child do |dom|
           results.each do |assessment|
             render_item assessment, dom
           end
         end
-        data
+        results
       end
     end
 

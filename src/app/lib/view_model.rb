@@ -32,7 +32,7 @@ class ViewModel < StandardProcedure::Signal::Attribute::Hash
     end
 
     def belongs_to model, attribute_name = nil
-      collection = model.to_s.to_plural
+      collection = model.to_s.to_plural.to_sym
       model = model.to_sym
       attribute_name = attribute_name.to_sym
 
@@ -40,7 +40,7 @@ class ViewModel < StandardProcedure::Signal::Attribute::Hash
 
       define_method model do
         model_id = send attribute_name
-        self[model] ||= collection.to_class.find model_id
+        self[model] ||= application.send(collection).find model_id
       end
 
       define_method :"#{name}=" do |value|
