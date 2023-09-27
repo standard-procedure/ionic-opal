@@ -4,6 +4,7 @@ require "time"
 class Element < Browser::DOM::Element::Custom
   def initialize node
     super node
+    @attached = false
     @_properties = {}
   end
   attr_reader :_properties
@@ -12,6 +13,10 @@ class Element < Browser::DOM::Element::Custom
   end
 
   module Implementation
+    def attached?
+      @attached
+    end
+
     def on_attached
     end
 
@@ -25,15 +30,18 @@ class Element < Browser::DOM::Element::Custom
     end
 
     def attached
+      @attached = true
       on_attached
       redraw
     end
 
     def detached
+      @attached = false
       on_detached
     end
 
     def adopted
+      @attached = true
       on_adopted
       redraw
     end
@@ -49,7 +57,7 @@ class Element < Browser::DOM::Element::Custom
       @redraw_scheduled = true
       next_tick do
         @redraw_scheduled = false
-        render
+        render if attached?
       end
     end
 
@@ -111,6 +119,11 @@ class Element < Browser::DOM::Element::Custom
       # Define the HTML attributes on the underlying element
       observed_attributes ||= []
       observed_attributes << native_attribute_name
+    end
+
+    def model model_name
+      property model_name, type: :ruby
+      alias_method model_name, :model
     end
 
     def custom_element tag_name

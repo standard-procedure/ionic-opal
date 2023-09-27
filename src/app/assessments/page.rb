@@ -17,11 +17,12 @@ class Assessments
             dom.ion_card_header do
               dom.ion_card_title { assessment.title }
             end
-
             dom.ion_card_content do
-              dom.p { assessment.starting_on }
-              dom.p { assessment.ending_on }
-              dom.p { assessment.status }
+              dom.ion_grid do
+                dom.ui_attribute name: "Starting on", value: starting_on
+                dom.ui_attribute name: "Ending on", value: ending_on
+                dom.ui_attribute name: "Status", value: status
+              end
             end
           end
           dom.candidates_list.created do |l|
@@ -39,6 +40,9 @@ class Assessments
     def load_assessment
       Signal.observe do
         self.title = assessment.title
+        self.starting_on = assessment.starting_on
+        self.ending_on = assessment.ending_on
+        self.status = assessment.status
         redraw
       end
     end
