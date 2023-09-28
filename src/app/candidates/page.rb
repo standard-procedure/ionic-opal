@@ -1,3 +1,5 @@
+require_relative "reports_list"
+
 class Candidates
   class Page < Element
     property :assessment_id, type: :integer
@@ -21,17 +23,15 @@ class Candidates
             dom.ion_card_content do
               dom.ion_grid do
                 scores.each do |scale, score|
-                  dom.ion_row do
-                    dom.ion_col { scale }
-                    dom.ion_col(class: "ion-text-end") { score.to_s }
-                  end
+                  dom.ui_attribute name: scale, value: score.to_s
                 end
-                dom.ion_row do
-                  dom.ion_col { "Email" }
-                  dom.ion_col(class: "ion-text-end") { email }
-                end
+                dom.ui_attribute name: "Email", value: email
               end
             end
+          end
+          dom.reports_list.created do |l|
+            l.candidate = candidate
+            l.reports = candidate.reports
           end
         end
       end
