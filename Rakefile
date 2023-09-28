@@ -20,15 +20,18 @@ end
 
 desc "Build the app"
 task :build do
-  File.binwrite "www/application.js", Opal::Builder.build("environment").to_s
+  File.binwrite "www/client.js", Opal::Builder.build("environment").to_s
   `cp src/index.html www/index.html`
   `cp src/styles.css www/styles.css\ncp -r src/assets www/ `
+  `cp src/assets/logo.png www/`
 end
 
 desc "Deploy the app to the api platform"
 task :deploy do
   `mkdir -p ../platform/public/client`
   `cp -r www/* ../platform/public/client/`
+  `mv ../platform/public/client/client.js ../platform/public/`
+  `mv ../platform/public/client/assets/logo.png ../platform/public/`
 end
 
 Opal::RSpec::RakeTask.new(:spec) do |server, task|
