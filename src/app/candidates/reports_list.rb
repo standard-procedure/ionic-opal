@@ -15,7 +15,7 @@ class Candidates
             reports.each do |report|
               dom.ion_item do
                 dom.ion_label { report[:title] }
-                dom.ion_button slot: "end", download: true, href: report_url_for(report) do
+                dom.ion_button slot: "end", download: true, href: report_url_for(report), color: "light" do
                   dom.ion_icon slot: "icon-only", name: "download-outline"
                 end
               end
