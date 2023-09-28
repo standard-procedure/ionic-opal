@@ -25,6 +25,12 @@ task :build do
   `cp src/styles.css www/styles.css\ncp -r src/assets www/ `
 end
 
+desc "Deploy the app to the api platform"
+task :deploy do
+  `mkdir -p ../platform/public/client`
+  `cp -r www/* ../platform/public/client/`
+end
+
 Opal::RSpec::RakeTask.new(:spec) do |server, task|
   server.append_path "src/app"
   task.default_path = "spec"
