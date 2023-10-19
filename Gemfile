@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 group :development do
   gem "standardrb", ">= 1.0"
-  gem "rackup"
+  gem "puma"
   gem "rack-livereload"
   gem "guard"
   gem "guard-standardrb"

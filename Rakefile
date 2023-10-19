@@ -26,6 +26,11 @@ task :build do
   `cp src/assets/logo.png www/`
 end
 
+desc "Start Guard"
+task :guard do
+  `bundle exec guard start`
+end
+
 desc "Deploy the app to the api platform"
 task :deploy do
   `mkdir -p ../platform/public/client`

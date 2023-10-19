@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/workspace/data
+    command: "bundle exec puma -p 3000 -t 8:32"
+    ports:
+      - "3000:3000"
