@@ -6,10 +6,11 @@ class Accounts
     property :name
     property :parent_id, type: :integer
     property :header, type: :ruby
+    attr_reader :account
 
     def render
       inner_dom do |dom|
-        dom.ui_header title: name
+        dom.ui_header title: name, back_href: "/"
         dom.ion_content class: "ion-padding" do
           dom.assessments_list.created do |list|
             list.account = account
@@ -19,7 +20,10 @@ class Accounts
     end
 
     def on_attached
-      load_account
+      application.accounts.get(account_id).then do |account|
+        @account = account
+        load_account
+      end
     end
 
     def load_account
@@ -28,10 +32,6 @@ class Accounts
         self.parent_id = account.parent_id
         redraw
       end
-    end
-
-    def account
-      @account ||= application.accounts.find account_id
     end
 
     custom_element "account-page"

@@ -19,7 +19,7 @@ class Application < Element
 
   def render
     self.inner_html = <<~HTML
-      <ion-menu content-id="application-frame" side="start" swipe-gesture="true">
+      <ion-menu content-id="application-frame" side="end" swipe-gesture="true">
         <ui-menu></ui-menu>
       </ion-menu>
       <ion-router-outlet id="application-frame" swipe-gesture></ion-router-outlet>

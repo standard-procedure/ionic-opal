@@ -11,7 +11,7 @@ class Assessments
 
     def render
       inner_dom do |dom|
-        dom.ui_header title: title
+        dom.ui_header title: title, back_href: "/accounts/#{account_id}"
         dom.ion_content class: "ion-padding" do
           dom.ion_card do
             dom.ion_card_header do

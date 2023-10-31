@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./data:/workspace/data
+      - .:/workspace
     command: "bundle exec puma -p 3000 -t 8:32"
     ports:
       - "3000:3000"
